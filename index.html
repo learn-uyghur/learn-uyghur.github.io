@@ -283,6 +283,28 @@
   .ct-rule b{color:var(--pome);}
   .ct-rule .uy{font-size:1.5rem;color:var(--mulberry);letter-spacing:.12em;direction:rtl;unicode-bidi:isolate;display:inline-block;}
   .ct-note{font-size:.82rem;color:var(--ink-soft);line-height:1.7;margin-top:10px;}
+  /* 辨形互動關卡 */
+  .ct-prog{text-align:center;font-size:.76rem;color:var(--ink-soft);margin:12px 0 2px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;}
+  .ct-prompt{text-align:center;font-size:1rem;color:var(--ink);margin:6px auto 14px;max-width:40ch;line-height:1.65;}
+  .ct-prompt .uy{font-size:1.25em;color:var(--mulberry);}
+  .ct-opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;max-width:540px;margin:0 auto;}
+  .ct-opt{background:var(--panel);border:1px solid var(--line-strong);border-radius:6px;padding:12px 10px;cursor:pointer;font-family:inherit;text-align:center;transition:.13s;color:var(--ink);}
+  .ct-opt:hover{border-color:var(--lapis);}
+  .ct-opt:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .ct-opt .on{font-weight:700;font-size:1rem;}
+  .ct-opt .oh{display:block;font-size:.74rem;color:var(--ink-soft);margin-top:3px;}
+  .ct-opt.ok{background:color-mix(in srgb,var(--emerald) 18%,var(--panel));border-color:var(--emerald);}
+  .ct-opt.no{background:color-mix(in srgb,var(--pome) 16%,var(--panel));border-color:var(--pome);}
+  .ct-opt:disabled{cursor:default;}
+  .ct-fb{text-align:center;min-height:2.8em;margin:14px auto 6px;max-width:44ch;font-size:.92rem;line-height:1.65;color:var(--ink);}
+  .ct-fb.good{color:var(--emerald);}
+  .ct-fb b,.ct-fb .uy{color:var(--mulberry);}
+  .ct-tile.cur{background:color-mix(in srgb,var(--saffron) 20%,var(--panel));box-shadow:inset 0 0 0 2px var(--saffron);}
+  .ct-tile.solved{animation:ctpop .38s ease;}
+  @keyframes ctpop{0%{transform:scale(1);}45%{transform:scale(1.14);}100%{transform:scale(1);}}
+  .ct-tile .fl{font-size:.7rem;font-weight:700;color:var(--mulberry);min-height:1em;opacity:0;transition:.3s;margin-top:2px;}
+  .ct-tile.solved .fl{opacity:1;}
+  .ct-replaywrap .btn{margin:0 5px;}
 </style>
 </head>
 <body>
@@ -786,72 +808,93 @@ function showWordbook(){
 
 /* ═══════════════ 連寫教學（以 ئالما 為例） ═══════════════ */
 const ZWJ="‍";
-let CT_CAPS=[],ctToken=0;
+let CTX=null;
 function showConnect(){
   const ja=lang==="ja";
-  const C= ja ? {
+  const F = ja ? [
+    {k:"iso", n:"独立形", h:"両側つながらない"},
+    {k:"init",n:"語頭形", h:"左だけつながる"},
+    {k:"med", n:"語中形", h:"両側つながる"},
+    {k:"fin", n:"語尾形", h:"右だけつながる"},
+  ] : [
+    {k:"iso", n:"獨立式", h:"前後都不連"},
+    {k:"init",n:"前連式", h:"只往左連（接後一個）"},
+    {k:"med", n:"中連式", h:"左右都連"},
+    {k:"fin", n:"後連式", h:"只往右連（接前一個）"},
+  ];
+  const steps = ja ? [
+    {iso:"ئا", word:"ئا",        r:"a", correct:"iso",  conn:null,
+      why:"語頭の母音のかたまり。次の <span class='uy'>ل</span> とつながらず単独で立つ → 独立形。"},
+    {iso:"ل",  word:"ل"+ZWJ,     r:"l", correct:"init", conn:{i:0,type:"brk"},
+      why:"右の <span class='uy'>ئا</span> はつながらず、左の <span class='uy'>م</span> へつながる → 左だけ → 語頭形。"},
+    {iso:"م",  word:ZWJ+"م"+ZWJ, r:"m", correct:"med",  conn:{i:1,type:"link"},
+      why:"右に <span class='uy'>ل</span>、左に <span class='uy'>ا</span>。両側に隣がある → 語中形。"},
+    {iso:"ا",  word:ZWJ+"ا",     r:"a", correct:"fin",  conn:{i:2,type:"link"},
+      why:"片手の文字。語尾で前の <span class='uy'>م</span> を受ける → 右だけ → 語尾形。"},
+  ] : [
+    {iso:"ئا", word:"ئا",        r:"a", correct:"iso",  conn:null,
+      why:"字首母音的整塊。不跟後面的 <span class='uy'>ل</span> 連、自成一塊 → 獨立式。"},
+    {iso:"ل",  word:"ل"+ZWJ,     r:"l", correct:"init", conn:{i:0,type:"brk"},
+      why:"右邊的 <span class='uy'>ئا</span> 不連、左邊接 <span class='uy'>م</span> → 只往左連 → 前連式。"},
+    {iso:"م",  word:ZWJ+"م"+ZWJ, r:"m", correct:"med",  conn:{i:1,type:"link"},
+      why:"右接 <span class='uy'>ل</span>、左接 <span class='uy'>ا</span>，左右都有鄰居 → 兩邊都連 → 中連式。"},
+    {iso:"ا",  word:ZWJ+"ا",     r:"a", correct:"fin",  conn:{i:2,type:"link"},
+      why:"單手字母，在詞尾承接前面的 <span class='uy'>م</span> → 只往右連 → 後連式。"},
+  ];
+  const S = ja ? {
     pill:"「リンゴ」ئالما で学ぶ",
-    intro:`ウイグル文字は筆記体のように、文字が次々つながります。ただし「<span class="hand">片手の文字</span>」という一群は<b>右（前の文字）とだけ</b>つながり、<b>左（次の文字）とはつながりません</b>。これらは単語をいくつかのかたまりに分けます。`,
+    intro:`ウイグル文字は筆記体のようにつながりますが、各文字は<b>左右に隣があるか</b>で形が変わります（最大4種）。まず各文字を単語に入れると、どの形になるか当ててみましょう。`,
     meaning:"リンゴ",
-    asmTitle:"組み立てを見てみよう",
-    replay:"▶ もう一度再生",
-    caps:[
-      "まず4文字それぞれの形：a · l · m · a。",
-      `<b class="uy">ئا</b> は片手の文字。<span class="no">左とはつながらない</span> → ここで切れる。`,
-      `<b class="uy">ل</b> と <b class="uy">م</b> は手をつなぐ。`,
-      `<b class="uy">م</b> は語尾の <b class="uy">ا</b> までつながる。`,
-      `完成！<b class="uy">ئالما</b> は2つのかたまり：〔<span class="uy">ئا</span>〕〔<span class="uy">لما</span>〕。`,
-    ],
-    breakdownTitle:"4文字を1つずつ",
+    quizTitle:"1文字ずつ：どの形になる？",
+    prompt:`上の<b>ハイライト</b>の文字を <span class="uy">ئالما</span> に入れると、どの形？`,
+    correct:"✓ 正解！", wrong:"もう一度：左右に隣があるか確認しよう。",
+    next:"次へ →", finish:"完成を見る",
+    doneCap:`完成！4つの形が全部そろいました。<span class="uy">ئالما</span> は2つのかたまり：〔<span class="uy">ئا</span>〕〔<span class="uy">لما</span>〕。`,
+    progress:(a,b)=>`${a} / ${b} 文字目`, replay:"▶ もう一度",
+    breakdownTitle:"4文字を1つずつ", formsTitle:"4つの形の対照",
+    formsHead:["文字","独立","語頭","語中","語尾"],
+    ruleHead:"片手の文字（鎖を切る）",
+    rule:`右とだけつながり、左とはつながらない文字。出てくると鎖が切れます：`,
+    note:`註：ﺋ は語頭母音の台。ا は片手の文字なので「語頭・語中」形はありません（—）。`,
     cards:[
       {g:"ئا",r:"a",d:"語頭の母音。母音で始まる語には台 ﺋ が付くので、最初の a は ئا と書く。",badge:"one",bt:"片手"},
-      {g:"ل"+ZWJ,r:"l",d:"両手の文字。右の ئا はつながらないので、ここは語頭形 لـ で左の م だけにつなぐ。",badge:"two",bt:"両手"},
-      {g:ZWJ+"م"+ZWJ,r:"m",d:"両手の文字。左右に隣があるので中間形 ـمـ。",badge:"two",bt:"両手"},
+      {g:"ل"+ZWJ,r:"l",d:"両手の文字。右の ئا はつながらないので語頭形 لـ で左の م だけにつなぐ。",badge:"two",bt:"両手"},
+      {g:ZWJ+"م"+ZWJ,r:"m",d:"両手の文字。左右に隣があるので語中形 ـمـ。",badge:"two",bt:"両手"},
       {g:ZWJ+"ا",r:"a",d:"片手の文字。語尾で前の م を受けて語尾形 ـا。",badge:"one",bt:"片手"},
     ],
-    formsTitle:"形は位置で変わる",
-    formsHead:["文字","独立","語頭","中間","語尾"],
-    ruleHead:"片手の文字（鎖を切る文字）",
-    rule:`右とだけつながり、左とはつながらない文字。出てくると鎖が切れます：`,
-    note:"註：ﺋ は語頭母音の台。ا は片手の文字なので「語頭・中間」形はありません（— で表示）。",
-    lbl:{brk:"切れる",link:"つながる"},
   } : {
     pill:"以 ئالما（蘋果）為例",
-    intro:`維吾爾文像草寫，字母會一個接一個連起來。但有一群「<span class="hand">單手字母</span>」<b>只跟右邊（前一個字母）</b>連、<b>不跟左邊（後一個）連</b>，它們會把一個詞斷成好幾塊。`,
+    intro:`維吾爾文像草寫，字母會連起來；但每個字母會因為<b>左右有沒有鄰居</b>而長成不同的樣子（最多四種）。先把每個字母放進詞裡，猜猜看它會變成哪一種。`,
     meaning:"蘋果",
-    asmTitle:"看它怎麼組起來",
-    replay:"▶ 重播示範",
-    caps:[
-      "先看 4 個字母各自的樣子：a · l · m · a。",
-      `<b class="uy">ئا</b> 是單手字母，<span class="no">不跟左邊連</span> → 這裡斷一節。`,
-      `<b class="uy">ل</b> 和 <b class="uy">م</b> 牽手相連。`,
-      `<b class="uy">م</b> 一路連到詞尾的 <b class="uy">ا</b>。`,
-      `完成！<b class="uy">ئالما</b> 其實是兩塊：〔<span class="uy">ئا</span>〕〔<span class="uy">لما</span>〕。`,
-    ],
-    breakdownTitle:"四個字母逐一看",
-    cards:[
-      {g:"ئا",r:"a",d:"字首母音。詞以母音開頭時要加載體 ﺋ，所以第一個 a 寫成 ئا。",badge:"one",bt:"單手"},
-      {g:"ل"+ZWJ,r:"l",d:"雙手字母。右邊的 ئا 不連，所以用前連式 لـ，只往左牽 م。",badge:"two",bt:"雙手"},
-      {g:ZWJ+"م"+ZWJ,r:"m",d:"雙手字母。左右都有鄰居，用中連式 ـمـ。",badge:"two",bt:"雙手"},
-      {g:ZWJ+"ا",r:"a",d:"單手字母。在詞尾承接前面的 م，用後連式 ـا。",badge:"one",bt:"單手"},
-    ],
-    formsTitle:"形狀會隨位置改變",
+    quizTitle:"一個一個來：它會變成哪一種形態？",
+    prompt:`把上面<b>高亮</b>的字母放進 <span class="uy">ئالما</span> 裡，它會變成哪一種形態？`,
+    correct:"✓ 答對了！", wrong:"再想想：它的左右有沒有鄰居？",
+    next:"下一個 →", finish:"看完成",
+    doneCap:`完成！四種形態剛好都出現了。<span class="uy">ئالما</span> 其實是兩塊：〔<span class="uy">ئا</span>〕〔<span class="uy">لما</span>〕。`,
+    progress:(a,b)=>`第 ${a} / ${b} 個字母`, replay:"▶ 重來一次",
+    breakdownTitle:"四個字母逐一看", formsTitle:"四種形態對照",
     formsHead:["字母","獨立","前連","中連","後連"],
     ruleHead:"哪些是單手字母（會斷鏈）？",
     rule:`只跟右邊連、不跟左邊連的字母。遇到它們，連寫的鏈子就斷一節：`,
-    note:"註：ﺋ 是字首母音的載體；ا 是單手字母，沒有「前／中」連式（以 — 表示）。",
-    lbl:{brk:"斷",link:"連"},
+    note:`註：ﺋ 是字首母音的載體；ا 是單手字母，沒有「前／中」連式（以 — 表示）。本課的「前連／中連／後連」在《大眾維語》課本中分別稱作「前連式／前後連式／後連式」。`,
+    cards:[
+      {g:"ئا",r:"a",d:"字首母音。詞以母音開頭時要加載體 ﺋ，所以第一個 a 寫成 ئا。",badge:"one",bt:"單手"},
+      {g:"ل"+ZWJ,r:"l",d:"雙手字母。右邊的 ئا 不連，用前連式 لـ，只往左牽 م。",badge:"two",bt:"雙手"},
+      {g:ZWJ+"م"+ZWJ,r:"m",d:"雙手字母。左右都有鄰居，用中連式 ـمـ。",badge:"two",bt:"雙手"},
+      {g:ZWJ+"ا",r:"a",d:"單手字母。在詞尾承接前面的 م，用後連式 ـا。",badge:"one",bt:"單手"},
+    ],
   };
 
-  const tiles=[{g:"ئا",r:"a"},{g:"ل"+ZWJ,r:"l"},{g:ZWJ+"م"+ZWJ,r:"m"},{g:ZWJ+"ا",r:"a"}];
+  CTX={ja,F,steps,S,step:0,lbl:(ja?{brk:"切れる",link:"つながる"}:{brk:"斷",link:"連"})};
+
   let asm="";
-  tiles.forEach((tl,i)=>{
-    asm+=`<div class="ct-tile"><span class="g uy">${tl.g}</span><span class="r">${tl.r}</span></div>`;
+  steps.forEach((st,i)=>{
+    asm+=`<div class="ct-tile" data-i="${i}"><span class="g uy">${st.iso}</span><span class="r">${st.r}</span><span class="fl"></span></div>`;
     if(i<3) asm+=`<div class="ct-conn"><span class="bar"></span><span class="lab"></span></div>`;
   });
 
-  const cardsHTML=C.cards.map((c,i)=>{
-    const tone = c.badge==="one" ? "var(--pome)" : "var(--emerald)";
+  const cardsHTML=S.cards.map(c=>{
+    const tone=c.badge==="one"?"var(--pome)":"var(--emerald)";
     return `<div class="ct-card" style="--tone:${tone}"><div class="cg uy">${c.g}</div><div class="cr">${c.r}</div><div class="cd">${c.d}</div><span class="ct-badge ${c.badge}">${c.bt}</span></div>`;
   }).join("");
 
@@ -861,63 +904,85 @@ function showConnect(){
     {n:"ا",iso:"ا",init:"—",med:"—",fin:ZWJ+"ا"},
   ];
   const cell=g=>g==="—"?`<td>—</td>`:`<td class="glyph uy">${g}</td>`;
-  const formsHTML=`<tr>${C.formsHead.map(h=>`<th>${h}</th>`).join("")}</tr>`+
+  const formsHTML=`<tr>${S.formsHead.map(h=>`<th>${h}</th>`).join("")}</tr>`+
     formsRows.map(r=>`<tr><td class="name uy">${r.n}</td>${cell(r.iso)}${cell(r.init)}${cell(r.med)}${cell(r.fin)}</tr>`).join("");
 
-  $("connectPill").textContent=C.pill;
+  $("connectPill").textContent=S.pill;
   $("connectBody").innerHTML=`
-    <div class="ct-intro">${C.intro}</div>
+    <div class="ct-intro">${S.intro}</div>
     <div class="ct-result">
-      <div class="word uy">ئالما</div>
-      <div class="rom">alma</div>
-      <div class="mean">${C.meaning}</div>
+      <div class="word uy">ئالما</div><div class="rom">alma</div><div class="mean">${S.meaning}</div>
     </div>
-    <div class="ct-sec-h">${C.asmTitle}</div>
+    <div class="ct-sec-h">${S.quizTitle}</div>
     <div class="ct-asm" id="ctAsm">${asm}</div>
-    <div class="ct-caption" id="ctCap"></div>
-    <div class="ct-replaywrap"><button class="btn gold" onclick="playAsm()">${C.replay}</button></div>
-    <div class="ct-sec-h">${C.breakdownTitle}</div>
+    <div class="ct-prog" id="ctProg"></div>
+    <div class="ct-prompt" id="ctPrompt"></div>
+    <div class="ct-opts" id="ctOpts"></div>
+    <div class="ct-fb" id="ctFb"></div>
+    <div class="ct-replaywrap">
+      <button class="btn gold" id="ctNextBtn" onclick="ctNext()" style="display:none"></button>
+      <button class="btn ghost" onclick="ctReset()">${S.replay}</button>
+    </div>
+    <div class="ct-sec-h">${S.breakdownTitle}</div>
     <div class="ct-cards">${cardsHTML}</div>
-    <div class="ct-sec-h">${C.formsTitle}</div>
+    <div class="ct-sec-h">${S.formsTitle}</div>
     <table class="ct-forms">${formsHTML}</table>
-    <div class="ct-rule"><b>${C.ruleHead}</b><br>${C.rule}<br><span class="uy">ا د ر ز ژ و ۇ ۆ ۈ ۋ</span></div>
-    <div class="ct-note">${C.note}</div>`;
-  CT_CAPS=C.caps;
-  CT_LBL=C.lbl;
+    <div class="ct-rule"><b>${S.ruleHead}</b><br>${S.rule}<br><span class="uy">ا د ر ز ژ و ۇ ۆ ۈ ۋ</span></div>
+    <div class="ct-note">${S.note}</div>`;
   show("view-connect");
-  playAsm();
+  ctRender();
 }
-let CT_LBL={brk:"斷",link:"連"};
-function playAsm(){
-  const asm=$("ctAsm"); if(!asm) return;
-  const conns=[...asm.querySelectorAll(".ct-conn")];
-  const tiles=[...asm.querySelectorAll(".ct-tile")];
-  const cap=$("ctCap"), caps=CT_CAPS, L=CT_LBL;
-  const my=++ctToken;
-  conns.forEach(c=>{c.classList.remove("link","brk");c.querySelector(".lab").textContent="";});
-  tiles.forEach(t=>t.classList.remove("hl"));
-  const setConn=(idx,type,label,a,b,text)=>{
-    if(my!==ctToken) return;
-    conns[idx].classList.add(type);
-    conns[idx].querySelector(".lab").textContent=label;
-    tiles.forEach(t=>t.classList.remove("hl"));
-    tiles[a].classList.add("hl"); tiles[b].classList.add("hl");
-    cap.innerHTML=text;
-  };
-  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
-  if(reduce){
-    conns[0].classList.add("brk");conns[0].querySelector(".lab").textContent=L.brk;
-    conns[1].classList.add("link");conns[1].querySelector(".lab").textContent=L.link;
-    conns[2].classList.add("link");conns[2].querySelector(".lab").textContent=L.link;
-    cap.innerHTML=caps[4];
-    return;
+function ctRender(){
+  if(!CTX) return;
+  const S=CTX.S;
+  document.querySelectorAll("#ctAsm .ct-tile").forEach((t,idx)=>{
+    t.classList.toggle("cur", idx===CTX.step && !t.classList.contains("solved"));
+  });
+  $("ctProg").textContent=S.progress(CTX.step+1,CTX.steps.length);
+  $("ctPrompt").innerHTML=S.prompt;
+  const fb=$("ctFb"); fb.innerHTML=""; fb.className="ct-fb";
+  $("ctNextBtn").style.display="none";
+  $("ctOpts").innerHTML=CTX.F.map(f=>
+    `<button class="ct-opt" onclick="ctPick(this,'${f.k}')"><span class="on">${f.n}</span><span class="oh">${f.h}</span></button>`).join("");
+}
+function ctPick(btn,k){
+  const st=CTX.steps[CTX.step], S=CTX.S;
+  if(k===st.correct){
+    document.querySelectorAll("#ctOpts .ct-opt").forEach(b=>b.disabled=true);
+    btn.classList.add("ok");
+    const tile=document.querySelector(`#ctAsm .ct-tile[data-i="${CTX.step}"]`);
+    tile.querySelector(".g").textContent=st.word;
+    tile.classList.remove("cur"); tile.classList.add("solved");
+    tile.querySelector(".fl").textContent=CTX.F.find(f=>f.k===st.correct).n;
+    if(st.conn){
+      const c=document.querySelectorAll("#ctAsm .ct-conn")[st.conn.i];
+      c.classList.add(st.conn.type);
+      c.querySelector(".lab").textContent= st.conn.type==="brk"?CTX.lbl.brk:CTX.lbl.link;
+    }
+    const fb=$("ctFb"); fb.className="ct-fb good"; fb.innerHTML=S.correct+" "+st.why;
+    const nb=$("ctNextBtn"); nb.style.display="";
+    nb.textContent=(CTX.step>=CTX.steps.length-1)?S.finish:S.next;
+  } else {
+    btn.classList.add("no"); btn.disabled=true;
+    const fb=$("ctFb"); fb.className="ct-fb"; fb.innerHTML=S.wrong;
   }
-  cap.innerHTML=caps[0];
-  setTimeout(()=>setConn(0,"brk",L.brk,0,1,caps[1]),800);
-  setTimeout(()=>setConn(1,"link",L.link,1,2,caps[2]),1900);
-  setTimeout(()=>setConn(2,"link",L.link,2,3,caps[3]),3000);
-  setTimeout(()=>{if(my!==ctToken)return;tiles.forEach(t=>t.classList.remove("hl"));cap.innerHTML=caps[4];},4100);
 }
+function ctNext(){
+  CTX.step++;
+  if(CTX.step>=CTX.steps.length){ ctFinish(); return; }
+  ctRender();
+}
+function ctFinish(){
+  const S=CTX.S;
+  document.querySelectorAll("#ctAsm .ct-tile").forEach(t=>t.classList.remove("cur"));
+  $("ctProg").textContent=S.progress(CTX.steps.length,CTX.steps.length);
+  $("ctPrompt").innerHTML="";
+  $("ctOpts").innerHTML="";
+  const fb=$("ctFb"); fb.className="ct-fb good"; fb.innerHTML=S.doneCap;
+  $("ctNextBtn").style.display="none";
+}
+function ctReset(){ showConnect(); }
+
 
 /* ═══════════════ 類別選擇 ═══════════════ */
 let pendingMode=null,selectedCat="ALL";
