@@ -76,7 +76,36 @@
   }
   .hero-ey{font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--saffron);margin-bottom:18px;}
   .hero-ey .uy{font-size:1.05rem;letter-spacing:0;}
-  .hero-word{font-family:'Scheherazade New',serif;font-size:clamp(3.4rem,9vw,6rem);line-height:1.12;color:var(--panel);margin-bottom:14px;text-shadow:0 2px 0 rgba(0,0,0,.18);}
+  .hero-word{font-family:'Scheherazade New',serif;font-size:clamp(3.4rem,9vw,6rem);line-height:1.12;color:var(--panel);margin-bottom:14px;text-shadow:0 2px 0 rgba(0,0,0,.18);display:inline-block;position:relative;}
+  /* ── 書法運筆特效：墨跡由右往左推進＋毛筆光點 ── */
+  @property --rev{syntax:'<length-percentage>';inherits:false;initial-value:0%;}
+  .hw-ink{
+    display:inline-block;
+    --rev:106%; /* 靜止狀態＝完整顯示，動畫只負責「寫出來」的過程 */
+    -webkit-mask-image:linear-gradient(to left,#000 0,#000 var(--rev),transparent calc(var(--rev) + 6%),transparent 100%);
+    mask-image:linear-gradient(to left,#000 0,#000 var(--rev),transparent calc(var(--rev) + 6%),transparent 100%);
+    animation:hw-write 2.5s cubic-bezier(.66,0,.34,1) .35s both;
+  }
+  @keyframes hw-write{from{--rev:0%;}to{--rev:106%;}}
+  .hw-tip{
+    position:absolute;top:50%;right:0;width:.42em;height:.42em;border-radius:50%;
+    transform:translate(50%,-50%);pointer-events:none;opacity:0;
+    background:radial-gradient(circle,rgba(255,244,216,.95) 0%,rgba(226,161,28,.55) 55%,transparent 72%);
+    filter:blur(1px);mix-blend-mode:screen;
+    animation:hw-tip 2.5s cubic-bezier(.66,0,.34,1) .35s both;
+  }
+  @keyframes hw-tip{
+    0%{opacity:0;right:-1%;top:40%;}
+    9%{opacity:1;}
+    35%{top:62%;}
+    62%{top:40%;}
+    90%{opacity:1;top:56%;}
+    100%{opacity:0;right:101%;top:48%;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hw-ink{-webkit-mask-image:none;mask-image:none;animation:none;}
+    .hw-tip{display:none;}
+  }
   .hero-rom{font-size:1.05rem;color:var(--saffron);font-weight:500;letter-spacing:.02em;}
   .hero-tr{font-size:1.15rem;color:var(--panel);margin-top:3px;font-weight:500;}
   .hero-kicker{margin-top:22px;max-width:46ch;font-size:.95rem;line-height:1.75;color:rgba(243,234,213,.82);}
@@ -644,7 +673,7 @@ function applyLang(){
   $("xpLabel").textContent=t.xpLabel;
   $("introBox").innerHTML=`
     <p class="hero-ey">${t.heroEy}</p>
-    <div class="hero-word uy">ياخشىمۇسىز؟</div>
+    <div class="hero-word uy" id="heroWord"><span class="hw-ink">ياخشىمۇسىز؟</span><span class="hw-tip" aria-hidden="true"></span></div>
     <p class="hero-rom">Yaxshimusiz?</p>
     <p class="hero-tr">${t.heroGreeting}</p>
     <p class="hero-kicker">${t.heroKicker}</p>`;
