@@ -118,9 +118,9 @@
   .grp-h span{font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mulberry);white-space:nowrap;}
   .grp-h span .uy{font-size:1.05rem;color:var(--lapis);letter-spacing:0;}
   .grp-h i{flex:1;height:1px;background:var(--line-strong);}
-  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
   .tiles-4{grid-template-columns:repeat(4,1fr);}
-  @media(max-width:760px){.tiles-4{grid-template-columns:1fr 1fr;}}
+  @media(max-width:760px){.tiles,.tiles-4{grid-template-columns:1fr 1fr;}}
   @media(max-width:480px){.tiles,.tiles-4{grid-template-columns:1fr;}}
 
   .mcard{
@@ -237,6 +237,52 @@
   .grp:nth-of-type(2){animation-delay:.08s;}
   @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
   @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
+
+  /* ── 連寫教學 ── */
+  .ct-intro{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--saffron);border-radius:3px 7px 7px 3px;padding:16px 18px;font-size:.92rem;line-height:1.8;color:var(--ink);margin-bottom:8px;}
+  .ct-intro .hand{font-weight:700;color:var(--pome);}
+  .ct-result{text-align:center;margin:22px 0 8px;}
+  .ct-result .word{font-size:clamp(3rem,9vw,4.6rem);color:var(--mulberry);line-height:1.3;}
+  .ct-result .rom{color:var(--lapis);font-weight:600;letter-spacing:.03em;}
+  .ct-result .mean{color:var(--ink-soft);font-size:.9rem;}
+  .ct-sec-h{font-size:.88rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mulberry);margin:28px 0 12px;display:flex;align-items:center;gap:10px;}
+  .ct-sec-h::after{content:"";flex:1;height:1px;background:var(--line);}
+  .ct-asm{display:flex;direction:rtl;justify-content:center;align-items:center;flex-wrap:nowrap;margin:6px 0;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px 8px;}
+  .ct-tile{display:flex;flex-direction:column;align-items:center;gap:6px;min-width:54px;padding:6px 4px;border-radius:6px;transition:.25s;}
+  .ct-tile .g{font-size:clamp(2rem,6vw,2.8rem);color:var(--mulberry);line-height:1.25;}
+  .ct-tile .r{font-size:.78rem;color:var(--ink-soft);font-weight:600;}
+  .ct-tile.hl{background:color-mix(in srgb,var(--saffron) 16%,var(--panel));}
+  .ct-tile.hl .g{text-shadow:0 0 16px rgba(226,161,28,.75);}
+  .ct-conn{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:40px;align-self:center;margin-top:-14px;}
+  .ct-conn .bar{width:26px;height:3px;border-radius:2px;background:var(--line-strong);opacity:.3;transition:.3s;}
+  .ct-conn .lab{font-size:.68rem;margin-top:7px;font-weight:700;opacity:0;transition:.3s;white-space:nowrap;}
+  .ct-conn.link .bar{background:var(--emerald);opacity:1;height:5px;width:30px;}
+  .ct-conn.link .lab{color:var(--emerald);opacity:1;}
+  .ct-conn.brk .bar{background:transparent;height:0;border-top:3px dashed var(--pome);width:26px;}
+  .ct-conn.brk .lab{color:var(--pome);opacity:1;}
+  .ct-caption{text-align:center;min-height:3em;color:var(--ink);font-size:.95rem;line-height:1.65;margin:14px auto 4px;max-width:40ch;}
+  .ct-caption b{color:var(--mulberry);}
+  .ct-caption .no{color:var(--pome);}
+  .ct-caption .uy,.ct-card .uy,.ct-rule .uy,.ct-forms .uy{font-size:1.15em;}
+  .ct-replaywrap{text-align:center;margin-top:4px;}
+  .ct-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:680px){.ct-cards{grid-template-columns:1fr 1fr;}}
+  .ct-card{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--tone,var(--lapis));border-radius:2px 2px 7px 7px;padding:14px 12px;text-align:center;}
+  .ct-card .cg{font-size:2rem;color:var(--mulberry);line-height:1.3;}
+  .ct-card .cr{font-weight:700;color:var(--lapis);margin:2px 0 6px;}
+  .ct-card .cd{font-size:.8rem;color:var(--ink-soft);line-height:1.65;}
+  .ct-badge{display:inline-block;font-size:.7rem;font-weight:700;padding:2px 9px;border-radius:99px;margin-top:8px;}
+  .ct-badge.one{background:color-mix(in srgb,var(--pome) 16%,var(--panel));color:var(--pome);}
+  .ct-badge.two{background:color-mix(in srgb,var(--emerald) 18%,var(--panel));color:var(--emerald);}
+  .ct-forms{width:100%;border-collapse:collapse;}
+  .ct-forms th,.ct-forms td{border:1px solid var(--line);padding:9px 6px;text-align:center;}
+  .ct-forms th{color:var(--ink-soft);font-weight:600;font-size:.76rem;text-transform:uppercase;letter-spacing:.04em;}
+  .ct-forms td.glyph{font-size:1.6rem;color:var(--mulberry);}
+  .ct-forms td.name{font-weight:700;color:var(--lapis);}
+  .ct-rule{background:color-mix(in srgb,var(--pome) 7%,var(--panel));border:1px solid color-mix(in srgb,var(--pome) 28%,transparent);border-radius:8px;padding:14px 16px;margin-top:14px;font-size:.9rem;line-height:1.8;color:var(--ink);}
+  .ct-rule b{color:var(--pome);}
+  .ct-rule .uy{font-size:1.5rem;color:var(--mulberry);letter-spacing:.12em;direction:rtl;unicode-bidi:isolate;display:inline-block;}
+  .ct-note{font-size:.82rem;color:var(--ink-soft);line-height:1.7;margin-top:10px;}
 </style>
 </head>
 <body>
@@ -275,6 +321,15 @@
       <span class="pill" id="wordbookPill"></span>
     </div>
     <div id="wordbookBody"></div>
+  </div>
+
+  <!-- ════ 連寫教學 ════ -->
+  <div id="view-connect" class="hidden">
+    <div class="topbar">
+      <button class="btn ghost back-btn" onclick="goHome()"></button>
+      <span class="pill" id="connectPill"></span>
+    </div>
+    <div id="connectBody"></div>
   </div>
 
   <!-- ════ 類別選擇 ════ -->
@@ -346,6 +401,7 @@ zh:{
     {e:"✏️",t:"單字測驗",d:"維譯中、中譯維混合選擇題，有三條命，連對有加分！",f:"showCatPick('quiz')"},
     {e:"🃏",t:"單字翻翻樂",d:"翻牌配對：維吾爾文 ↔ 中文。翻次越少星星越多！",f:"showCatPick('memory')"},
     {e:"💬",t:"會話挑戰",d:"情境對話題：有人跟你打招呼，你該怎麼回？對應第 13～25 課。",f:"startDialogue()"},
+    {e:"🔗",t:"字母怎麼牽手",d:"維文字母怎麼連寫？以「蘋果」ئالما 為例，看懂誰連、誰斷。",f:"showConnect()"},
   ],
   back:"← 回主選單",quit:"✕ 放棄",
   lettersPill:"維吾爾文 32 字母（第 1～12 課）",
@@ -385,6 +441,7 @@ ja:{
     {e:"✏️",t:"単語クイズ",d:"ウイグル語→日本語、日本語→ウイグル語の4択。ライフ3つ、連続正解でボーナス！",f:"showCatPick('quiz')"},
     {e:"🃏",t:"単語めくりゲーム",d:"神経衰弱：ウイグル語⇔日本語のペアを探そう。少ない回数ほど星が増える！",f:"showCatPick('memory')"},
     {e:"💬",t:"会話チャレンジ",d:"場面別の会話問題。挨拶されたら何と返す？第13～25課対応。",f:"startDialogue()"},
+    {e:"🔗",t:"文字のつなげ方",d:"ウイグル文字はどうつながる？「リンゴ」ئالما を例に、つながる所・切れる所を理解。",f:"showConnect()"},
   ],
   back:"← メニューへ",quit:"✕ やめる",
   lettersPill:"ウイグル文字 32 文字（第1～12課）",
@@ -638,11 +695,12 @@ const MENUMETA=[
   {tone:'var(--pome)',   range:'13–25'},
   {tone:'var(--silk)',   range:'13–25'},
   {tone:'var(--lapis)',  range:'13–25'},
+  {tone:'var(--saffron)',ey:{zh:'書寫規則',ja:'書き方'}},
 ];
 
 /* ═══════════════ 共用工具 ═══════════════ */
 const $=id=>document.getElementById(id);
-const VIEWS=["view-home","view-letters","view-wordbook","view-cat","view-quiz","view-memory","view-result"];
+const VIEWS=["view-home","view-letters","view-wordbook","view-connect","view-cat","view-quiz","view-memory","view-result"];
 function show(v){VIEWS.forEach(x=>$(x).classList.toggle("hidden",x!==v));window.scrollTo(0,0);}
 function goHome(){show("view-home");}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -681,12 +739,12 @@ function applyLang(){
     <p class="hero-kicker">${t.heroKicker}</p>`;
   const card=(m,i)=>`<button class="mcard" style="--tone:${MENUMETA[i].tone}" onclick="${m.f}">
       <span class="niche"><span class="ic">${m.e}</span></span>
-      <span class="mc-ey">${t.lessonRange(MENUMETA[i].range)}</span>
+      <span class="mc-ey">${MENUMETA[i].ey?MENUMETA[i].ey[lang]:t.lessonRange(MENUMETA[i].range)}</span>
       <span class="mc-t">${m.t}</span>
       <span class="mc-d">${m.d}</span></button>`;
   $("menuBox").innerHTML=
     `<section class="grp"><div class="grp-h"><span>${t.warmup}</span><i></i></div>
-       <div class="tiles">${[0,1].map(i=>card(t.menu[i],i)).join("")}</div></section>
+       <div class="tiles">${[0,1,6].map(i=>card(t.menu[i],i)).join("")}</div></section>
      <section class="grp"><div class="grp-h"><span>${t.challenge}</span><i></i></div>
        <div class="tiles tiles-4">${[2,3,4,5].map(i=>card(t.menu[i],i)).join("")}</div></section>`;
   document.querySelectorAll(".back-btn").forEach(b=>b.textContent=t.back);
@@ -700,6 +758,7 @@ function applyLang(){
   $("pairsLabel").textContent=t.pairsLabel;
   $("resRetry").textContent=t.retry;
   $("resHome").textContent=t.home;
+  if(!$("view-connect").classList.contains("hidden")) showConnect();
 }
 
 /* ── 經驗值 ── */
@@ -723,6 +782,141 @@ function showWordbook(){
     ws.map(w=>`<tr><td class="uy">${w.u}</td><td class="latin">${w.l}</td><td>${gloss(w)}<span style="color:var(--dim);font-size:.78rem;">　${T().lesson(w.les)}</span></td></tr>`).join("")+
     `</table></div>`).join("");
   show("view-wordbook");
+}
+
+/* ═══════════════ 連寫教學（以 ئالما 為例） ═══════════════ */
+const ZWJ="‍";
+let CT_CAPS=[],ctToken=0;
+function showConnect(){
+  const ja=lang==="ja";
+  const C= ja ? {
+    pill:"「リンゴ」ئالما で学ぶ",
+    intro:`ウイグル文字は筆記体のように、文字が次々つながります。ただし「<span class="hand">片手の文字</span>」という一群は<b>右（前の文字）とだけ</b>つながり、<b>左（次の文字）とはつながりません</b>。これらは単語をいくつかのかたまりに分けます。`,
+    meaning:"リンゴ",
+    asmTitle:"組み立てを見てみよう",
+    replay:"▶ もう一度再生",
+    caps:[
+      "まず4文字それぞれの形：a · l · m · a。",
+      `<b class="uy">ئا</b> は片手の文字。<span class="no">左とはつながらない</span> → ここで切れる。`,
+      `<b class="uy">ل</b> と <b class="uy">م</b> は手をつなぐ。`,
+      `<b class="uy">م</b> は語尾の <b class="uy">ا</b> までつながる。`,
+      `完成！<b class="uy">ئالما</b> は2つのかたまり：〔<span class="uy">ئا</span>〕〔<span class="uy">لما</span>〕。`,
+    ],
+    breakdownTitle:"4文字を1つずつ",
+    cards:[
+      {g:"ئا",r:"a",d:"語頭の母音。母音で始まる語には台 ﺋ が付くので、最初の a は ئا と書く。",badge:"one",bt:"片手"},
+      {g:"ل"+ZWJ,r:"l",d:"両手の文字。右の ئا はつながらないので、ここは語頭形 لـ で左の م だけにつなぐ。",badge:"two",bt:"両手"},
+      {g:ZWJ+"م"+ZWJ,r:"m",d:"両手の文字。左右に隣があるので中間形 ـمـ。",badge:"two",bt:"両手"},
+      {g:ZWJ+"ا",r:"a",d:"片手の文字。語尾で前の م を受けて語尾形 ـا。",badge:"one",bt:"片手"},
+    ],
+    formsTitle:"形は位置で変わる",
+    formsHead:["文字","独立","語頭","中間","語尾"],
+    ruleHead:"片手の文字（鎖を切る文字）",
+    rule:`右とだけつながり、左とはつながらない文字。出てくると鎖が切れます：`,
+    note:"註：ﺋ は語頭母音の台。ا は片手の文字なので「語頭・中間」形はありません（— で表示）。",
+    lbl:{brk:"切れる",link:"つながる"},
+  } : {
+    pill:"以 ئالما（蘋果）為例",
+    intro:`維吾爾文像草寫，字母會一個接一個連起來。但有一群「<span class="hand">單手字母</span>」<b>只跟右邊（前一個字母）</b>連、<b>不跟左邊（後一個）連</b>，它們會把一個詞斷成好幾塊。`,
+    meaning:"蘋果",
+    asmTitle:"看它怎麼組起來",
+    replay:"▶ 重播示範",
+    caps:[
+      "先看 4 個字母各自的樣子：a · l · m · a。",
+      `<b class="uy">ئا</b> 是單手字母，<span class="no">不跟左邊連</span> → 這裡斷一節。`,
+      `<b class="uy">ل</b> 和 <b class="uy">م</b> 牽手相連。`,
+      `<b class="uy">م</b> 一路連到詞尾的 <b class="uy">ا</b>。`,
+      `完成！<b class="uy">ئالما</b> 其實是兩塊：〔<span class="uy">ئا</span>〕〔<span class="uy">لما</span>〕。`,
+    ],
+    breakdownTitle:"四個字母逐一看",
+    cards:[
+      {g:"ئا",r:"a",d:"字首母音。詞以母音開頭時要加載體 ﺋ，所以第一個 a 寫成 ئا。",badge:"one",bt:"單手"},
+      {g:"ل"+ZWJ,r:"l",d:"雙手字母。右邊的 ئا 不連，所以用前連式 لـ，只往左牽 م。",badge:"two",bt:"雙手"},
+      {g:ZWJ+"م"+ZWJ,r:"m",d:"雙手字母。左右都有鄰居，用中連式 ـمـ。",badge:"two",bt:"雙手"},
+      {g:ZWJ+"ا",r:"a",d:"單手字母。在詞尾承接前面的 م，用後連式 ـا。",badge:"one",bt:"單手"},
+    ],
+    formsTitle:"形狀會隨位置改變",
+    formsHead:["字母","獨立","前連","中連","後連"],
+    ruleHead:"哪些是單手字母（會斷鏈）？",
+    rule:`只跟右邊連、不跟左邊連的字母。遇到它們，連寫的鏈子就斷一節：`,
+    note:"註：ﺋ 是字首母音的載體；ا 是單手字母，沒有「前／中」連式（以 — 表示）。",
+    lbl:{brk:"斷",link:"連"},
+  };
+
+  const tiles=[{g:"ئا",r:"a"},{g:"ل"+ZWJ,r:"l"},{g:ZWJ+"م"+ZWJ,r:"m"},{g:ZWJ+"ا",r:"a"}];
+  let asm="";
+  tiles.forEach((tl,i)=>{
+    asm+=`<div class="ct-tile"><span class="g uy">${tl.g}</span><span class="r">${tl.r}</span></div>`;
+    if(i<3) asm+=`<div class="ct-conn"><span class="bar"></span><span class="lab"></span></div>`;
+  });
+
+  const cardsHTML=C.cards.map((c,i)=>{
+    const tone = c.badge==="one" ? "var(--pome)" : "var(--emerald)";
+    return `<div class="ct-card" style="--tone:${tone}"><div class="cg uy">${c.g}</div><div class="cr">${c.r}</div><div class="cd">${c.d}</div><span class="ct-badge ${c.badge}">${c.bt}</span></div>`;
+  }).join("");
+
+  const formsRows=[
+    {n:"ل",iso:"ل",init:"ل"+ZWJ,med:ZWJ+"ل"+ZWJ,fin:ZWJ+"ل"},
+    {n:"م",iso:"م",init:"م"+ZWJ,med:ZWJ+"م"+ZWJ,fin:ZWJ+"م"},
+    {n:"ا",iso:"ا",init:"—",med:"—",fin:ZWJ+"ا"},
+  ];
+  const cell=g=>g==="—"?`<td>—</td>`:`<td class="glyph uy">${g}</td>`;
+  const formsHTML=`<tr>${C.formsHead.map(h=>`<th>${h}</th>`).join("")}</tr>`+
+    formsRows.map(r=>`<tr><td class="name uy">${r.n}</td>${cell(r.iso)}${cell(r.init)}${cell(r.med)}${cell(r.fin)}</tr>`).join("");
+
+  $("connectPill").textContent=C.pill;
+  $("connectBody").innerHTML=`
+    <div class="ct-intro">${C.intro}</div>
+    <div class="ct-result">
+      <div class="word uy">ئالما</div>
+      <div class="rom">alma</div>
+      <div class="mean">${C.meaning}</div>
+    </div>
+    <div class="ct-sec-h">${C.asmTitle}</div>
+    <div class="ct-asm" id="ctAsm">${asm}</div>
+    <div class="ct-caption" id="ctCap"></div>
+    <div class="ct-replaywrap"><button class="btn gold" onclick="playAsm()">${C.replay}</button></div>
+    <div class="ct-sec-h">${C.breakdownTitle}</div>
+    <div class="ct-cards">${cardsHTML}</div>
+    <div class="ct-sec-h">${C.formsTitle}</div>
+    <table class="ct-forms">${formsHTML}</table>
+    <div class="ct-rule"><b>${C.ruleHead}</b><br>${C.rule}<br><span class="uy">ا د ر ز ژ و ۇ ۆ ۈ ۋ</span></div>
+    <div class="ct-note">${C.note}</div>`;
+  CT_CAPS=C.caps;
+  CT_LBL=C.lbl;
+  show("view-connect");
+  playAsm();
+}
+let CT_LBL={brk:"斷",link:"連"};
+function playAsm(){
+  const asm=$("ctAsm"); if(!asm) return;
+  const conns=[...asm.querySelectorAll(".ct-conn")];
+  const tiles=[...asm.querySelectorAll(".ct-tile")];
+  const cap=$("ctCap"), caps=CT_CAPS, L=CT_LBL;
+  const my=++ctToken;
+  conns.forEach(c=>{c.classList.remove("link","brk");c.querySelector(".lab").textContent="";});
+  tiles.forEach(t=>t.classList.remove("hl"));
+  const setConn=(idx,type,label,a,b,text)=>{
+    if(my!==ctToken) return;
+    conns[idx].classList.add(type);
+    conns[idx].querySelector(".lab").textContent=label;
+    tiles.forEach(t=>t.classList.remove("hl"));
+    tiles[a].classList.add("hl"); tiles[b].classList.add("hl");
+    cap.innerHTML=text;
+  };
+  const reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+  if(reduce){
+    conns[0].classList.add("brk");conns[0].querySelector(".lab").textContent=L.brk;
+    conns[1].classList.add("link");conns[1].querySelector(".lab").textContent=L.link;
+    conns[2].classList.add("link");conns[2].querySelector(".lab").textContent=L.link;
+    cap.innerHTML=caps[4];
+    return;
+  }
+  cap.innerHTML=caps[0];
+  setTimeout(()=>setConn(0,"brk",L.brk,0,1,caps[1]),800);
+  setTimeout(()=>setConn(1,"link",L.link,1,2,caps[2]),1900);
+  setTimeout(()=>setConn(2,"link",L.link,2,3,caps[3]),3000);
+  setTimeout(()=>{if(my!==ctToken)return;tiles.forEach(t=>t.classList.remove("hl"));cap.innerHTML=caps[4];},4100);
 }
 
 /* ═══════════════ 類別選擇 ═══════════════ */
