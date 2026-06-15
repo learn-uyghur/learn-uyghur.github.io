@@ -61,9 +61,9 @@
 
   /* ── hero ── */
   #introBox{
-    position:relative;overflow:hidden;color:var(--panel);border-radius:6px;
-    background:radial-gradient(130% 150% at 100% 0%, var(--mulberry) 0%, var(--mulberry-2) 72%);
-    padding:44px 46px 40px;margin-bottom:34px;
+    position:relative;overflow:hidden;color:var(--panel);border-radius:6px;text-align:center;
+    background:radial-gradient(130% 150% at 50% 0%, var(--mulberry) 0%, var(--mulberry-2) 78%);
+    padding:50px 52px 46px;margin-bottom:34px;
     box-shadow:0 18px 42px -22px rgba(46,12,32,.7);
   }
   #introBox::after{
@@ -76,27 +76,28 @@
   }
   .hero-ey{font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--saffron);margin-bottom:18px;}
   .hero-ey .uy{font-size:1.05rem;letter-spacing:0;}
-  .hero-word{font-family:'Scheherazade New',serif;font-size:clamp(3.4rem,9vw,6rem);line-height:1.12;color:var(--panel);margin-bottom:14px;text-shadow:0 2px 0 rgba(0,0,0,.18);display:inline-block;position:relative;}
+  .hero-word{font-family:'Scheherazade New',serif;font-size:clamp(2.6rem,8.5vw,5.5rem);line-height:1.12;color:var(--panel);margin-bottom:14px;text-shadow:0 2px 0 rgba(0,0,0,.18);display:inline-block;position:relative;max-width:100%;}
   /* ── 書法運筆特效：墨跡由右往左推進＋毛筆光點 ── */
   @property --rev{syntax:'<length-percentage>';inherits:false;initial-value:0%;}
   .hw-ink{
     display:inline-block;
     --rev:106%; /* 靜止狀態＝完整顯示，動畫只負責「寫出來」的過程 */
-    -webkit-mask-image:linear-gradient(to left,#000 0,#000 var(--rev),transparent calc(var(--rev) + 6%),transparent 100%);
-    mask-image:linear-gradient(to left,#000 0,#000 var(--rev),transparent calc(var(--rev) + 6%),transparent 100%);
-    animation:hw-write 2.5s cubic-bezier(.66,0,.34,1) .35s both;
+    -webkit-mask-image:linear-gradient(to left,#000 var(--rev),transparent calc(var(--rev) + 7%));
+    mask-image:linear-gradient(to left,#000 var(--rev),transparent calc(var(--rev) + 7%));
+    animation:hw-write 2.6s cubic-bezier(.66,0,.34,1) .35s both;
   }
-  @keyframes hw-write{from{--rev:0%;}to{--rev:106%;}}
+  /* 由 -7%（連柔邊都在右緣外）寫到 106%（全部寫完）：第一筆也是現場寫出來的 */
+  @keyframes hw-write{from{--rev:-7%;}to{--rev:106%;}}
   .hw-tip{
     position:absolute;top:50%;right:0;width:.42em;height:.42em;border-radius:50%;
     transform:translate(50%,-50%);pointer-events:none;opacity:0;
     background:radial-gradient(circle,rgba(255,244,216,.95) 0%,rgba(226,161,28,.55) 55%,transparent 72%);
     filter:blur(1px);mix-blend-mode:screen;
-    animation:hw-tip 2.5s cubic-bezier(.66,0,.34,1) .35s both;
+    animation:hw-tip 2.6s cubic-bezier(.66,0,.34,1) .35s both;
   }
   @keyframes hw-tip{
-    0%{opacity:0;right:-1%;top:40%;}
-    9%{opacity:1;}
+    0%{opacity:0;right:-7%;top:46%;}
+    7%{opacity:1;top:42%;}
     35%{top:62%;}
     62%{top:40%;}
     90%{opacity:1;top:56%;}
@@ -108,7 +109,7 @@
   }
   .hero-rom{font-size:1.05rem;color:var(--saffron);font-weight:500;letter-spacing:.02em;}
   .hero-tr{font-size:1.15rem;color:var(--panel);margin-top:3px;font-weight:500;}
-  .hero-kicker{margin-top:22px;max-width:46ch;font-size:.95rem;line-height:1.75;color:rgba(243,234,213,.82);}
+  .hero-kicker{margin:22px auto 0;max-width:42ch;font-size:.95rem;line-height:1.75;color:rgba(243,234,213,.82);}
 
   /* ── menu groups ── */
   .grp{margin-bottom:30px;}
