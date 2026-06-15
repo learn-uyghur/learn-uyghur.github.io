@@ -88,26 +88,21 @@
   }
   /* 由 -7%（連柔邊都在右緣外）寫到 106%（全部寫完）：第一筆也是現場寫出來的 */
   @keyframes hw-write{from{--rev:-7%;}to{--rev:106%;}}
-  /* 毛筆造型：竹桿＋金屬箍＋墨毫收尖，筆尖在 .hw-tip 錨點（筆畫前緣） */
+  /* 筆尖觸紙的濕墨光澤：直向、柔邊、低調，跟著筆畫前緣移動（不是物件，只是手感） */
   .hw-tip{
-    position:absolute;top:50%;right:0;width:0;height:0;pointer-events:none;opacity:0;
+    position:absolute;top:50%;right:0;width:.13em;height:.66em;
+    transform:translate(50%,-50%) rotate(-12deg);pointer-events:none;opacity:0;
+    background:radial-gradient(50% 50% at 50% 50%,rgba(255,241,212,.85),rgba(226,161,28,.28) 58%,transparent 74%);
+    filter:blur(2.5px);mix-blend-mode:screen;
     animation:hw-tip 2.6s cubic-bezier(.66,0,.34,1) .35s both;
   }
-  .hw-tip::before{
-    content:"";position:absolute;left:50%;bottom:0;width:.5em;height:1.12em;
-    margin-left:-.25em;margin-bottom:-.05em;
-    background:url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 175'><defs><linearGradient id='h' x1='0' y1='0' x2='1' y2='0'><stop offset='0' stop-color='%238a5a2e'/><stop offset='.5' stop-color='%23c9924d'/><stop offset='1' stop-color='%236b4424'/></linearGradient><radialGradient id='w'><stop offset='0' stop-color='%23fff4d8'/><stop offset='.5' stop-color='%23e2a11c'/><stop offset='1' stop-color='%23e2a11c' stop-opacity='0'/></radialGradient></defs><rect x='34' y='6' width='12' height='66' rx='6' fill='url(%23h)'/><rect x='31' y='61' width='18' height='15' rx='3' fill='%23dcb65e'/><path d='M33 74 Q26 116 40 166 Q54 116 47 74 Q40 80 33 74 Z' fill='%23241018' stroke='%23eccd8c' stroke-width='1.3' stroke-opacity='.6'/><path d='M40 90 Q44 122 40 160 Q37 122 40 90 Z' fill='%236a3a54' opacity='.75'/><circle cx='40' cy='165' r='6' fill='url(%23w)'/></svg>") no-repeat bottom center;
-    background-size:contain;
-    transform:rotate(-15deg);transform-origin:bottom center;
-    filter:drop-shadow(0 1px 3px rgba(0,0,0,.45)) drop-shadow(0 0 5px rgba(255,221,150,.5));
-  }
   @keyframes hw-tip{
-    0%{opacity:0;right:-7%;top:46%;}
-    7%{opacity:1;top:42%;}
-    35%{top:62%;}
-    62%{top:40%;}
-    90%{opacity:1;top:56%;}
-    100%{opacity:0;right:101%;top:48%;}
+    0%{opacity:0;right:-7%;top:47%;}
+    8%{opacity:.8;top:43%;}
+    35%{top:60%;}
+    62%{top:42%;}
+    90%{opacity:.8;top:55%;}
+    100%{opacity:0;right:101%;top:49%;}
   }
   @media(prefers-reduced-motion:reduce){
     .hw-ink{-webkit-mask-image:none;mask-image:none;animation:none;}
