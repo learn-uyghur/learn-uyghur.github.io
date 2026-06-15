@@ -3,153 +3,229 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@400;500;600;700&family=Scheherazade+New:wght@400;700&display=swap" rel="stylesheet">
 <title>大眾維語・學習小遊戲</title>
 <style>
   :root{
-    --bg1:#1a1a2e; --bg2:#16213e;
-    --card:#0f3460; --accent:#e94560; --gold:#ffd369;
-    --ok:#4ecca3; --bad:#e94560; --text:#eaeaea; --dim:#9aa5c4;
+    --plaster:#E9DCC0; --panel:#F3EAD5;
+    --ink:#2A1A22; --ink-soft:#7A6470;
+    --mulberry:#46122F; --mulberry-2:#2E0C20;
+    --pome:#C23A2B; --lapis:#176E86; --saffron:#E2A11C;
+    --emerald:#2E7D5B; --silk:#B23A86;
+    --line:rgba(42,26,34,.16); --line-strong:rgba(42,26,34,.30);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
   body{
-    font-family:"PingFang TC","Hiragino Sans","Microsoft JhengHei",sans-serif;
-    background:linear-gradient(135deg,var(--bg1),var(--bg2));
-    min-height:100vh;color:var(--text);
+    font-family:'Familjen Grotesk','PingFang TC','Hiragino Sans','Noto Sans CJK TC','Microsoft JhengHei',sans-serif;
+    background:var(--plaster);color:var(--ink);min-height:100vh;
+    background-image:
+      radial-gradient(circle at 16% 10%, rgba(178,58,134,.05), transparent 42%),
+      radial-gradient(circle at 86% 80%, rgba(23,110,134,.05), transparent 46%);
   }
-  .uy{
-    font-family:"Geeza Pro","Noto Naskh Arabic","Arial Unicode MS",serif;
-    direction:rtl;unicode-bidi:isolate;
+  .uy{font-family:'Scheherazade New','Geeza Pro','Noto Naskh Arabic',serif;direction:rtl;unicode-bidi:isolate;line-height:1.5;}
+
+  /* ── etles ikat spine (signature) ── */
+  .etles-spine{
+    position:fixed;top:0;left:0;bottom:0;width:18px;z-index:50;pointer-events:none;
+    background:
+      repeating-linear-gradient(-45deg, rgba(0,0,0,.14) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(45deg, rgba(255,255,255,.10) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(180deg,
+        var(--pome) 0 26px, var(--saffron) 26px 50px, var(--panel) 50px 60px,
+        var(--emerald) 60px 86px, var(--lapis) 86px 112px, var(--panel) 112px 122px,
+        var(--silk) 122px 150px, var(--mulberry) 150px 176px, var(--panel) 176px 186px);
+    box-shadow:1px 0 0 var(--line-strong), 3px 0 12px rgba(42,26,34,.18);
   }
-  .wrap{max-width:760px;margin:0 auto;padding:20px 16px 60px;}
-  header{display:flex;justify-content:space-between;align-items:center;padding:10px 0 24px;flex-wrap:wrap;gap:8px;}
-  header h1{font-size:1.2rem;color:var(--gold);letter-spacing:1px;}
-  .hright{display:flex;gap:8px;align-items:center;}
-  .xpbox{background:rgba(255,255,255,.08);border-radius:20px;padding:6px 14px;font-size:.85rem;}
-  .xpbox b{color:var(--gold);}
+  @media(max-width:640px){.etles-spine{width:9px;}}
+
+  .wrap{max-width:880px;margin:0 auto;padding:26px 22px 80px 30px;}
+  @media(max-width:640px){.wrap{padding:18px 16px 60px 18px;}}
+
+  /* ── header / wordmark ── */
+  header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:26px;}
+  .wordmark{display:flex;align-items:baseline;gap:10px;}
+  .wordmark .wm-uy{font-family:'Scheherazade New',serif;font-size:1.6rem;color:var(--mulberry);line-height:1;}
+  .wordmark .wm-tx{font-size:.82rem;font-weight:600;letter-spacing:.03em;color:var(--ink-soft);}
+  .hright{display:flex;gap:10px;align-items:center;}
   .langbtn{
-    background:rgba(255,211,105,.15);border:1px solid var(--gold);color:var(--gold);
-    border-radius:20px;padding:6px 14px;font-size:.85rem;cursor:pointer;font-family:inherit;
+    background:transparent;border:1px solid var(--line-strong);color:var(--ink);
+    border-radius:999px;padding:7px 15px;font-size:.82rem;cursor:pointer;font-family:inherit;font-weight:500;transition:.15s;
   }
+  .langbtn:hover{background:var(--mulberry);color:var(--panel);border-color:var(--mulberry);}
+  .langbtn:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .xpbox{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:7px 15px;font-size:.82rem;color:var(--ink-soft);}
+  .xpbox b{color:var(--pome);font-variant-numeric:tabular-nums;}
 
-  /* ── 主選單 ── */
-  .menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;}
+  /* ── hero ── */
+  #introBox{
+    position:relative;overflow:hidden;color:var(--panel);border-radius:6px;
+    background:radial-gradient(130% 150% at 100% 0%, var(--mulberry) 0%, var(--mulberry-2) 72%);
+    padding:44px 46px 40px;margin-bottom:34px;
+    box-shadow:0 18px 42px -22px rgba(46,12,32,.7);
+  }
+  #introBox::after{
+    content:"";position:absolute;top:0;right:0;bottom:0;width:20px;opacity:.92;
+    background:
+      repeating-linear-gradient(-45deg, rgba(0,0,0,.16) 0 5px, transparent 5px 10px),
+      repeating-linear-gradient(180deg,
+        var(--saffron) 0 24px, var(--pome) 24px 48px, var(--silk) 48px 74px,
+        var(--emerald) 74px 100px, var(--lapis) 100px 126px);
+  }
+  .hero-ey{font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--saffron);margin-bottom:18px;}
+  .hero-ey .uy{font-size:1.05rem;letter-spacing:0;}
+  .hero-word{font-family:'Scheherazade New',serif;font-size:clamp(3.4rem,9vw,6rem);line-height:1.12;color:var(--panel);margin-bottom:14px;text-shadow:0 2px 0 rgba(0,0,0,.18);}
+  .hero-rom{font-size:1.05rem;color:var(--saffron);font-weight:500;letter-spacing:.02em;}
+  .hero-tr{font-size:1.15rem;color:var(--panel);margin-top:3px;font-weight:500;}
+  .hero-kicker{margin-top:22px;max-width:46ch;font-size:.95rem;line-height:1.75;color:rgba(243,234,213,.82);}
+
+  /* ── menu groups ── */
+  .grp{margin-bottom:30px;}
+  .grp-h{display:flex;align-items:center;gap:14px;margin-bottom:16px;}
+  .grp-h span{font-size:.8rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--mulberry);white-space:nowrap;}
+  .grp-h span .uy{font-size:1.05rem;color:var(--lapis);letter-spacing:0;}
+  .grp-h i{flex:1;height:1px;background:var(--line-strong);}
+  .tiles{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+  .tiles-4{grid-template-columns:repeat(4,1fr);}
+  @media(max-width:760px){.tiles-4{grid-template-columns:1fr 1fr;}}
+  @media(max-width:480px){.tiles,.tiles-4{grid-template-columns:1fr;}}
+
   .mcard{
-    background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);
-    border-radius:16px;padding:22px 18px;cursor:pointer;transition:.18s;
+    --tone:var(--lapis);
+    position:relative;text-align:left;cursor:pointer;font-family:inherit;color:var(--ink);
+    background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--tone);
+    border-radius:2px 2px 7px 7px;padding:22px 18px 20px;
+    display:flex;flex-direction:column;gap:7px;transition:transform .18s ease, box-shadow .18s ease;
   }
-  .mcard:hover{transform:translateY(-3px);background:rgba(255,255,255,.12);border-color:var(--gold);}
-  .mcard .emoji{font-size:2rem;}
-  .mcard h2{font-size:1.05rem;margin:10px 0 6px;color:var(--gold);}
-  .mcard p{font-size:.82rem;color:var(--dim);line-height:1.5;}
-  .intro{
-    background:rgba(233,69,96,.12);border:1px solid rgba(233,69,96,.35);
-    border-radius:14px;padding:14px 18px;margin-bottom:20px;font-size:.88rem;line-height:1.7;color:var(--dim);
+  .mcard:hover{transform:translateY(-4px);box-shadow:0 16px 28px -18px rgba(42,26,34,.55);}
+  .mcard:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .niche{
+    width:54px;height:62px;display:flex;align-items:flex-end;justify-content:center;position:relative;margin-bottom:4px;
+    background:var(--panel);background:color-mix(in srgb, var(--tone) 16%, var(--panel));
+    border:1px solid var(--line);border-color:color-mix(in srgb, var(--tone) 42%, transparent);
+    border-radius:27px 27px 5px 5px / 34px 34px 5px 5px;
   }
-  .intro b{color:var(--text);}
-  .intro .uy{font-size:1.1rem;color:var(--gold);}
+  .niche::before{content:"";position:absolute;top:-5px;left:50%;transform:translateX(-50%) rotate(45deg);width:9px;height:9px;background:var(--tone);border-radius:1px;}
+  .niche .ic{font-size:1.7rem;line-height:1;padding-bottom:9px;}
+  .mc-ey{font-size:.72rem;font-weight:700;letter-spacing:.08em;color:var(--tone);text-transform:uppercase;}
+  .mc-t{font-size:1.08rem;font-weight:700;color:var(--ink);}
+  .mc-d{font-size:.83rem;line-height:1.6;color:var(--ink-soft);}
 
-  /* ── 共用 ── */
-  .hidden{display:none!important;}
-  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;flex-wrap:wrap;gap:8px;}
-  .btn{
-    background:var(--accent);color:#fff;border:none;border-radius:10px;
-    padding:10px 20px;font-size:.95rem;cursor:pointer;font-family:inherit;transition:.15s;
-  }
-  .btn:hover{filter:brightness(1.15);}
-  .btn.ghost{background:rgba(255,255,255,.12);}
-  .btn.gold{background:var(--gold);color:#1a1a2e;font-weight:700;}
-  .pill{background:rgba(255,255,255,.1);border-radius:20px;padding:5px 14px;font-size:.85rem;}
-  .hearts{color:var(--accent);letter-spacing:2px;}
-  .progress{height:8px;background:rgba(255,255,255,.12);border-radius:4px;overflow:hidden;margin-bottom:22px;}
-  .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--gold));width:0;transition:.3s;}
+  /* ── topbar / buttons / pills ── */
+  .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px;flex-wrap:wrap;gap:10px;}
+  .btn{background:var(--pome);color:#fff;border:none;border-radius:4px;padding:11px 22px;font-size:.92rem;cursor:pointer;font-family:inherit;font-weight:600;transition:.15s;}
+  .btn:hover{filter:brightness(1.08);}
+  .btn:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-strong);}
+  .btn.ghost:hover{background:var(--ink);color:var(--panel);filter:none;}
+  .btn.gold{background:var(--saffron);color:var(--mulberry);}
+  .pill{background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:6px 15px;font-size:.83rem;color:var(--ink-soft);}
+  .pill b{color:var(--pome);font-variant-numeric:tabular-nums;}
+  .hearts{color:var(--pome);letter-spacing:2px;border-color:transparent;background:transparent;}
+  .progress{height:7px;border-radius:99px;overflow:hidden;margin-bottom:24px;border:1px solid var(--line);background:#E0D6C4;background:color-mix(in srgb,var(--mulberry) 12%, var(--panel));}
+  .progress i{display:block;height:100%;background:linear-gradient(90deg,var(--pome),var(--saffron));width:0;transition:.3s;}
 
-  /* ── 題目 ── */
-  .qcard{
-    background:rgba(255,255,255,.07);border-radius:18px;padding:30px 22px;text-align:center;margin-bottom:20px;
-  }
-  .qcard .label{font-size:.85rem;color:var(--dim);margin-bottom:14px;line-height:1.6;}
-  .qcard .big{font-size:3.2rem;line-height:1.4;}
-  .qcard .big.uy{font-size:3.6rem;}
-  .qcard .sub{font-size:1rem;color:var(--dim);margin-top:10px;}
-  .opts{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  /* ── quiz card ── */
+  .qcard{background:var(--panel);border:1px solid var(--line);border-top:3px solid var(--lapis);border-radius:3px 3px 8px 8px;padding:34px 24px;text-align:center;margin-bottom:22px;}
+  .qcard .label{font-size:.92rem;color:var(--ink-soft);margin-bottom:18px;line-height:1.7;}
+  .qcard .big{font-size:3rem;line-height:1.35;color:var(--ink);}
+  .qcard .big.uy{font-size:4rem;color:var(--mulberry);}
+  .qcard .sub{font-size:1rem;color:var(--lapis);margin-top:10px;letter-spacing:.02em;}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
   @media(max-width:520px){.opts{grid-template-columns:1fr;}}
-  .opt{
-    background:rgba(255,255,255,.08);border:2px solid transparent;border-radius:14px;
-    padding:16px 12px;font-size:1.15rem;cursor:pointer;text-align:center;transition:.15s;color:var(--text);
-    font-family:inherit;
-  }
-  .opt .uy{font-size:1.5rem;}
-  .opt:hover{border-color:var(--gold);}
-  .opt.correct{background:rgba(78,204,163,.25);border-color:var(--ok);}
-  .opt.wrong{background:rgba(233,69,96,.25);border-color:var(--bad);}
+  .opt{background:var(--panel);border:1px solid var(--line-strong);border-radius:5px;padding:17px 13px;font-size:1.1rem;cursor:pointer;text-align:center;transition:.13s;color:var(--ink);font-family:inherit;}
+  .opt .uy{font-size:1.7rem;color:var(--mulberry);}
+  .opt small{color:var(--ink-soft);}
+  .opt:hover{border-color:var(--lapis);background:var(--panel);background:color-mix(in srgb,var(--lapis) 8%, var(--panel));}
+  .opt:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .opt.correct{background:#D7EBE0;background:color-mix(in srgb,var(--emerald) 18%, var(--panel));border-color:var(--emerald);}
+  .opt.wrong{background:#F0D9D4;background:color-mix(in srgb,var(--pome) 16%, var(--panel));border-color:var(--pome);}
   .opt:disabled{cursor:default;}
-  .feedback{text-align:center;min-height:64px;margin-top:16px;font-size:.95rem;line-height:1.6;}
-  .feedback .uy{color:var(--gold);}
-  .combo{color:var(--gold);font-weight:700;}
+  .feedback{text-align:center;min-height:64px;margin-top:18px;font-size:.95rem;line-height:1.7;color:var(--ink-soft);}
+  .feedback .uy{color:var(--mulberry);font-size:1.3rem;}
+  .combo{color:var(--pome);font-weight:700;}
 
-  /* ── 翻翻樂 ── */
-  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;}
-  @media(max-width:520px){.board{grid-template-columns:repeat(4,1fr);gap:6px;}}
-  .tile{aspect-ratio:3/4;perspective:600px;cursor:pointer;}
-  .tile-inner{
-    position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d;
-  }
+  /* ── memory tiles ── */
+  .board{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+  @media(max-width:520px){.board{gap:7px;}}
+  .tile{aspect-ratio:3/4;perspective:700px;cursor:pointer;}
+  .tile-inner{position:relative;width:100%;height:100%;transition:transform .35s;transform-style:preserve-3d;}
   .tile.flip .tile-inner{transform:rotateY(180deg);}
-  .face{
-    position:absolute;inset:0;border-radius:12px;display:flex;align-items:center;justify-content:center;
-    backface-visibility:hidden;padding:6px;text-align:center;
-  }
-  .face.back{background:linear-gradient(135deg,var(--accent),#903749);font-size:1.6rem;}
-  .face.front{background:var(--card);transform:rotateY(180deg);font-size:.95rem;line-height:1.3;border:1px solid rgba(255,255,255,.18);}
-  .face.front .uy{font-size:1.25rem;}
-  .tile.done .face.front{background:rgba(78,204,163,.3);border-color:var(--ok);}
+  .face{position:absolute;inset:0;border-radius:4px 4px 7px 7px;display:flex;align-items:center;justify-content:center;backface-visibility:hidden;padding:6px;text-align:center;}
+  .face.back{color:var(--saffron);font-size:1.5rem;border:1px solid var(--mulberry-2);
+    background:repeating-linear-gradient(45deg, rgba(0,0,0,.12) 0 6px, transparent 6px 12px), radial-gradient(120% 120% at 100% 0,var(--mulberry),var(--mulberry-2));}
+  .face.front{background:var(--panel);transform:rotateY(180deg);font-size:.92rem;line-height:1.3;border:1px solid var(--line-strong);color:var(--ink);}
+  .face.front .uy{font-size:1.4rem;color:var(--mulberry);}
+  .face.front small{color:var(--ink-soft);}
+  .tile.done .face.front{background:#D7EBE0;background:color-mix(in srgb,var(--emerald) 20%, var(--panel));border-color:var(--emerald);}
   .tile.done{cursor:default;}
 
-  /* ── 學習頁 ── */
-  .grid-letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px;}
-  .lcard{background:rgba(255,255,255,.07);border-radius:12px;padding:14px 10px;text-align:center;}
-  .lcard .uy{font-size:2.2rem;color:var(--gold);display:block;}
-  .lcard .latin{font-size:1rem;margin-top:4px;}
-  .lcard .ipa{font-size:.8rem;color:var(--dim);}
-  .wbsec h3{color:var(--gold);margin:22px 0 10px;font-size:1rem;}
+  /* ── letters grid ── */
+  .grid-letters{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:12px;}
+  .lcard{background:var(--panel);border:1px solid var(--line);border-radius:3px 3px 7px 7px;padding:16px 10px;text-align:center;transition:.15s;}
+  .lcard:hover{border-color:var(--saffron);transform:translateY(-2px);}
+  .lcard .uy{font-size:2.6rem;color:var(--mulberry);display:block;line-height:1.25;}
+  .lcard .latin{font-size:1rem;margin-top:6px;font-weight:600;color:var(--lapis);}
+  .lcard .ipa{font-size:.8rem;color:var(--ink-soft);}
+
+  /* ── wordbook ── */
+  .wbsec{margin-bottom:8px;}
+  .wbsec h3{color:var(--mulberry);margin:26px 0 10px;font-size:.92rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;display:flex;align-items:center;gap:10px;}
+  .wbsec h3::after{content:"";flex:1;height:1px;background:var(--line);}
   table.wb{width:100%;border-collapse:collapse;}
-  table.wb td{padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.08);font-size:.95rem;}
-  table.wb td.uy{font-size:1.35rem;text-align:right;width:34%;color:var(--gold);}
-  table.wb td.latin{color:var(--dim);width:30%;}
+  table.wb td{padding:10px 8px;border-bottom:1px solid var(--line);font-size:.95rem;}
+  table.wb tr:hover td{background:color-mix(in srgb,var(--saffron) 8%,transparent);}
+  table.wb td.uy{font-size:1.7rem;text-align:right;width:30%;color:var(--mulberry);}
+  table.wb td.latin{color:var(--lapis);width:28%;font-weight:600;}
 
-  /* ── 類別選擇 ── */
-  .cats{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0 20px;}
-  .cat{
-    background:rgba(255,255,255,.08);border:2px solid transparent;border-radius:20px;
-    padding:8px 18px;cursor:pointer;font-size:.9rem;color:var(--text);font-family:inherit;
-  }
-  .cat.sel{border-color:var(--gold);background:rgba(255,211,105,.15);}
+  /* ── category chips ── */
+  .cats{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0 24px;}
+  .cat{background:var(--panel);border:1px solid var(--line-strong);border-radius:999px;padding:9px 19px;cursor:pointer;font-size:.9rem;color:var(--ink);font-family:inherit;transition:.13s;}
+  .cat:hover{border-color:var(--lapis);}
+  .cat:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .cat.sel{border-color:var(--mulberry);background:var(--mulberry);color:var(--panel);}
+  #catPrompt{color:var(--ink-soft);margin-bottom:8px;}
 
-  /* ── 結果 ── */
-  .result{text-align:center;padding:50px 20px;}
-  .result .stars{font-size:3rem;letter-spacing:6px;margin:14px 0;}
-  .result h2{font-size:1.6rem;color:var(--gold);}
-  .result p{color:var(--dim);margin:12px 0 26px;line-height:1.8;}
+  /* ── result ── */
+  .result{text-align:center;padding:54px 20px;}
+  .result .stars{font-size:3rem;letter-spacing:8px;margin:14px 0;}
+  .result h2{font-size:1.7rem;color:var(--mulberry);}
+  .result p{color:var(--ink-soft);margin:14px 0 28px;line-height:1.9;}
+  .result .uy{color:var(--mulberry);}
+  .result .btn{margin:0 5px;}
+
+  /* ── motion ── */
+  .hidden{display:none!important;}
   .pop{animation:pop .4s ease;}
-  @keyframes pop{0%{transform:scale(.6);opacity:0;}100%{transform:scale(1);opacity:1;}}
+  @keyframes pop{0%{transform:scale(.7);opacity:0;}100%{transform:scale(1);opacity:1;}}
   .shake{animation:shake .3s;}
   @keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
+  #introBox,.grp{animation:rise .5s ease both;}
+  .grp:nth-of-type(2){animation-delay:.08s;}
+  @keyframes rise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+  @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important;}}
 </style>
 </head>
 <body>
+<div class="etles-spine" aria-hidden="true"></div>
 <div class="wrap">
   <header>
-    <h1 id="appTitle"></h1>
+    <div class="wordmark">
+      <span class="wm-uy" aria-hidden="true">ئۇيغۇر</span>
+      <span class="wm-tx" id="appTitle"></span>
+    </div>
     <div class="hright">
       <button class="langbtn" id="langBtn" onclick="toggleLang()"></button>
-      <div class="xpbox">⭐ <span id="xpLabel"></span> <b id="xpVal">0</b>｜Lv.<b id="lvVal">1</b></div>
+      <div class="xpbox">⭐ <span id="xpLabel"></span> <b id="xpVal">0</b> · Lv.<b id="lvVal">1</b></div>
     </div>
   </header>
 
   <!-- ════ 主選單 ════ -->
   <div id="view-home">
-    <div class="intro" id="introBox"></div>
-    <div class="menu" id="menuBox"></div>
+    <div id="introBox"></div>
+    <div id="menuBox"></div>
   </div>
 
   <!-- ════ 字母表 ════ -->
@@ -233,8 +309,8 @@ zh:{
     本遊戲內容取自《大眾維語》（新疆大學出版社）第 1～25 課：32 個字母、約 100 個生詞與常用會話。
     建議順序：先到「字母表」和「單字本」預習，再開始挑戰！`,
   menu:[
-    {e:"📖",t:"字母表（預習）",d:"瀏覽 32 個維吾爾文字母、拉丁轉寫與國際音標。對應課本第 1～12 課。",f:"showStudyLetters()"},
-    {e:"📒",t:"單字本（預習）",d:"依主題瀏覽課本生詞：家人、職業、物品、數字、時間……",f:"showWordbook()"},
+    {e:"📖",t:"字母表",d:"瀏覽 32 個維吾爾文字母、拉丁轉寫與國際音標。對應課本第 1～12 課。",f:"showStudyLetters()"},
+    {e:"📒",t:"單字本",d:"依主題瀏覽課本生詞：家人、職業、物品、數字、時間……",f:"showWordbook()"},
     {e:"🔠",t:"字母挑戰",d:"看字母選讀音、看讀音選字母，共 10 題。熟記字母是第一步！",f:"startLetterQuiz()"},
     {e:"✏️",t:"單字測驗",d:"維譯中、中譯維混合選擇題，有三條命，連對有加分！",f:"showCatPick('quiz')"},
     {e:"🃏",t:"單字翻翻樂",d:"翻牌配對：維吾爾文 ↔ 中文。翻次越少星星越多！",f:"showCatPick('memory')"},
@@ -256,6 +332,12 @@ zh:{
   resScore:(s,t)=>`得分 ${s}／${t}`,resStopped:i=>`（答到第 ${i} 題）`,resXP:n=>`獲得經驗值 +${n}`,
   memDone:"全部配對成功！",memMoves:n=>`共翻了 ${n} 次`,
   retry:"再玩一次",home:"回主選單",
+  heroEy:`<span class="uy">ئۇيغۇرچە</span> · 維吾爾語入門`,
+  heroGreeting:"「您好嗎？」—— 就從這句問候開始",
+  heroKicker:"依《大眾維語》第 1–25 課，從 32 個字母到日常會話，邊玩邊學。",
+  warmup:`<span class="uy">ھازىرلىق</span> · 預習`,
+  challenge:`<span class="uy">سىناق</span> · 挑戰`,
+  lessonRange:r=>`第 ${r} 課`,
 },
 ja:{
   title:"📚 大衆ウイグル語・学習ミニゲーム",
@@ -266,8 +348,8 @@ ja:{
     このゲームは教科書『大衆維語』（新疆大学出版社）第1～25課がもとになっています：32文字・約100語・基本会話。
     まず「文字表」と「単語帳」で予習してからチャレンジしましょう！`,
   menu:[
-    {e:"📖",t:"文字表（予習）",d:"ウイグル文字32文字をラテン転写と国際音声記号つきで一覧。教科書第1～12課対応。",f:"showStudyLetters()"},
-    {e:"📒",t:"単語帳（予習）",d:"テーマ別に教科書の単語を一覧：家族、職業、物、数字、時間……",f:"showWordbook()"},
+    {e:"📖",t:"文字表",d:"ウイグル文字32文字をラテン転写と国際音声記号つきで一覧。教科書第1～12課対応。",f:"showStudyLetters()"},
+    {e:"📒",t:"単語帳",d:"テーマ別に教科書の単語を一覧：家族、職業、物、数字、時間……",f:"showWordbook()"},
     {e:"🔠",t:"文字チャレンジ",d:"文字→読み、読み→文字の4択、全10問。文字を覚えるのが第一歩！",f:"startLetterQuiz()"},
     {e:"✏️",t:"単語クイズ",d:"ウイグル語→日本語、日本語→ウイグル語の4択。ライフ3つ、連続正解でボーナス！",f:"showCatPick('quiz')"},
     {e:"🃏",t:"単語めくりゲーム",d:"神経衰弱：ウイグル語⇔日本語のペアを探そう。少ない回数ほど星が増える！",f:"showCatPick('memory')"},
@@ -289,6 +371,12 @@ ja:{
   resScore:(s,t)=>`スコア ${s}／${t}`,resStopped:i=>`（第${i}問まで）`,resXP:n=>`経験値 +${n} ゲット`,
   memDone:"全ペア成立！",memMoves:n=>`めくった回数：${n}回`,
   retry:"もう一度遊ぶ",home:"メニューに戻る",
+  heroEy:`<span class="uy">ئۇيغۇرچە</span> · ウイグル語入門`,
+  heroGreeting:"「お元気ですか？」—— この挨拶から始めよう",
+  heroKicker:"教科書『大衆維語』第1〜25課で、32の文字から日常会話まで、遊びながら学ぶ。",
+  warmup:`<span class="uy">ھازىرلىق</span> · 予習`,
+  challenge:`<span class="uy">سىناق</span> · チャレンジ`,
+  lessonRange:r=>`第${r}課`,
 },
 };
 
@@ -511,6 +599,16 @@ const DIALOGUES=[
       {u:"بۇ ئۆي.",l:"Bu öy.",zh:"這是房子。",ja:"これは家です。"}],les:22},
 ];
 
+/* ═══════════════ 選單視覺 meta（語言無關：色調＋課別範圍） ═══════════════ */
+const MENUMETA=[
+  {tone:'var(--lapis)',  range:'1–12'},
+  {tone:'var(--emerald)',range:'13–25'},
+  {tone:'var(--saffron)',range:'1–12'},
+  {tone:'var(--pome)',   range:'13–25'},
+  {tone:'var(--silk)',   range:'13–25'},
+  {tone:'var(--lapis)',  range:'13–25'},
+];
+
 /* ═══════════════ 共用工具 ═══════════════ */
 const $=id=>document.getElementById(id);
 const VIEWS=["view-home","view-letters","view-wordbook","view-cat","view-quiz","view-memory","view-result"];
@@ -544,10 +642,22 @@ function applyLang(){
   $("appTitle").textContent=t.title;
   $("langBtn").textContent=t.langBtn;
   $("xpLabel").textContent=t.xpLabel;
-  $("introBox").innerHTML=t.intro;
-  $("menuBox").innerHTML=t.menu.map(m=>
-    `<div class="mcard" onclick="${m.f}">
-       <div class="emoji">${m.e}</div><h2>${m.t}</h2><p>${m.d}</p></div>`).join("");
+  $("introBox").innerHTML=`
+    <p class="hero-ey">${t.heroEy}</p>
+    <div class="hero-word uy">ياخشىمۇسىز؟</div>
+    <p class="hero-rom">Yaxshimusiz?</p>
+    <p class="hero-tr">${t.heroGreeting}</p>
+    <p class="hero-kicker">${t.heroKicker}</p>`;
+  const card=(m,i)=>`<button class="mcard" style="--tone:${MENUMETA[i].tone}" onclick="${m.f}">
+      <span class="niche"><span class="ic">${m.e}</span></span>
+      <span class="mc-ey">${t.lessonRange(MENUMETA[i].range)}</span>
+      <span class="mc-t">${m.t}</span>
+      <span class="mc-d">${m.d}</span></button>`;
+  $("menuBox").innerHTML=
+    `<section class="grp"><div class="grp-h"><span>${t.warmup}</span><i></i></div>
+       <div class="tiles">${[0,1].map(i=>card(t.menu[i],i)).join("")}</div></section>
+     <section class="grp"><div class="grp-h"><span>${t.challenge}</span><i></i></div>
+       <div class="tiles tiles-4">${[2,3,4,5].map(i=>card(t.menu[i],i)).join("")}</div></section>`;
   document.querySelectorAll(".back-btn").forEach(b=>b.textContent=t.back);
   $("quitBtn").textContent=t.quit;$("memQuit").textContent=t.quit;
   $("lettersPill").textContent=t.lettersPill;
