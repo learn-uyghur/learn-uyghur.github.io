@@ -305,6 +305,46 @@
   .ct-tile .fl{font-size:.7rem;font-weight:700;color:var(--mulberry);min-height:1em;opacity:0;transition:.3s;margin-top:2px;}
   .ct-tile.solved .fl{opacity:1;}
   .ct-replaywrap .btn{margin:0 5px;}
+
+  /* ── 主選單：拼字遊戲 featured 卡 ── */
+  .mcard-feature{
+    grid-column:1/-1;display:flex;align-items:center;gap:18px;text-align:left;
+    background:linear-gradient(100deg, color-mix(in srgb,var(--silk) 14%,var(--panel)), var(--panel) 70%);
+    border:1px solid var(--line);border-top:3px solid var(--tone);border-radius:2px 2px 9px 9px;
+    padding:18px 22px;cursor:pointer;font-family:inherit;color:var(--ink);transition:transform .18s,box-shadow .18s;
+  }
+  .mcard-feature:hover{transform:translateY(-4px);box-shadow:0 16px 30px -18px rgba(42,26,34,.55);}
+  .mcard-feature:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .mcard-feature .niche{flex:none;margin:0;}
+  .feat-txt{display:flex;flex-direction:column;gap:5px;flex:1;}
+  .mcard-feature .mc-t{font-size:1.18rem;}
+  .feat-go{flex:none;font-size:1.2rem;color:var(--silk);font-weight:700;}
+
+  /* ── 拼字遊戲 view ── */
+  .sp-q{text-align:center;margin:6px 0 4px;}
+  .sp-q .sp-mean{font-size:1.5rem;font-weight:700;color:var(--mulberry);}
+  .sp-q .sp-rom{font-size:1.05rem;color:var(--lapis);font-weight:600;letter-spacing:.06em;margin-top:2px;}
+  .sp-prompt{text-align:center;color:var(--ink-soft);font-size:.9rem;margin:10px 0 4px;}
+  .sp-build{min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+    background:var(--panel);border:1px dashed var(--line-strong);border-radius:10px;padding:14px;margin:8px 0 6px;}
+  .sp-build .w{font-size:clamp(2.4rem,8vw,3.6rem);color:var(--mulberry);line-height:1.3;min-height:1.4em;}
+  .sp-build .w.empty{color:var(--ink-soft);opacity:.4;}
+  .sp-build .cnt{font-size:.78rem;color:var(--ink-soft);font-weight:700;letter-spacing:.05em;}
+  .sp-bank{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:14px 0;}
+  .sp-tile{min-width:62px;background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;
+    padding:10px 12px 8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.12s;}
+  .sp-tile .g{font-size:2.1rem;color:var(--mulberry);line-height:1.25;}
+  .sp-tile .rr{font-size:.74rem;color:var(--ink-soft);min-height:1em;}
+  .sp-tile:hover{border-color:var(--lapis);transform:translateY(-2px);}
+  .sp-tile:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .sp-tile.used{opacity:.32;pointer-events:none;border-style:dashed;}
+  .sp-tile.bad{animation:shake .3s;border-color:var(--pome);background:color-mix(in srgb,var(--pome) 14%,var(--panel));}
+  .sp-ctrls{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:6px 0;}
+  .sp-fb{text-align:center;min-height:2.2em;margin:10px auto;font-size:.95rem;line-height:1.6;color:var(--ink-soft);max-width:40ch;}
+  .sp-fb.win{color:var(--emerald);font-weight:700;font-size:1.05rem;}
+  .sp-win{text-align:center;margin:8px 0;}
+  .sp-win .ww{font-size:clamp(2.6rem,9vw,4rem);color:var(--mulberry);}
+  .sp-win .wm{color:var(--ink-soft);margin-top:4px;}
 </style>
 </head>
 <body>
@@ -352,6 +392,15 @@
       <span class="pill" id="connectPill"></span>
     </div>
     <div id="connectBody"></div>
+  </div>
+
+  <!-- ════ 拼字遊戲 ════ -->
+  <div id="view-spell" class="hidden">
+    <div class="topbar">
+      <button class="btn ghost back-btn" onclick="goHome()"></button>
+      <span class="pill" id="spellPill"></span>
+    </div>
+    <div id="spellBody"></div>
   </div>
 
   <!-- ════ 類別選擇 ════ -->
@@ -424,7 +473,9 @@ zh:{
     {e:"🃏",t:"單字翻翻樂",d:"翻牌配對：維吾爾文 ↔ 中文。翻次越少星星越多！",f:"showCatPick('memory')"},
     {e:"💬",t:"會話挑戰",d:"情境對話題：有人跟你打招呼，你該怎麼回？對應第 13～25 課。",f:"startDialogue()"},
     {e:"🔗",t:"字母怎麼牽手",d:"維文字母怎麼連寫？以「蘋果」ئالما 為例，看懂誰連、誰斷。",f:"showConnect()"},
+    {e:"🧩",t:"拼字遊戲",d:"看中文與讀音，從字母依序拼出維吾爾文單字，看著它們連起來變形！",f:"startSpell()"},
   ],
+  spellSection:`<span class="uy">ئويۇن</span> · 拼字遊戲`,
   back:"← 回主選單",quit:"✕ 放棄",
   lettersPill:"維吾爾文 32 字母（第 1～12 課）",
   wordbookPill:"課本生詞（第 13～25 課）",
@@ -464,7 +515,9 @@ ja:{
     {e:"🃏",t:"単語めくりゲーム",d:"神経衰弱：ウイグル語⇔日本語のペアを探そう。少ない回数ほど星が増える！",f:"showCatPick('memory')"},
     {e:"💬",t:"会話チャレンジ",d:"場面別の会話問題。挨拶されたら何と返す？第13～25課対応。",f:"startDialogue()"},
     {e:"🔗",t:"文字のつなげ方",d:"ウイグル文字はどうつながる？「リンゴ」ئالما を例に、つながる所・切れる所を理解。",f:"showConnect()"},
+    {e:"🧩",t:"つづりゲーム",d:"意味と読みを見て、文字から順番にウイグル語の単語を組み立てよう。つながり方も見える！",f:"startSpell()"},
   ],
+  spellSection:`<span class="uy">ئويۇن</span> · つづりゲーム`,
   back:"← メニューへ",quit:"✕ やめる",
   lettersPill:"ウイグル文字 32 文字（第1～12課）",
   wordbookPill:"教科書の単語（第13～25課）",
@@ -722,7 +775,7 @@ const MENUMETA=[
 
 /* ═══════════════ 共用工具 ═══════════════ */
 const $=id=>document.getElementById(id);
-const VIEWS=["view-home","view-letters","view-wordbook","view-connect","view-cat","view-quiz","view-memory","view-result"];
+const VIEWS=["view-home","view-letters","view-wordbook","view-connect","view-spell","view-cat","view-quiz","view-memory","view-result"];
 function show(v){VIEWS.forEach(x=>$(x).classList.toggle("hidden",x!==v));window.scrollTo(0,0);}
 function goHome(){show("view-home");}
 function shuffle(a){a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -764,11 +817,18 @@ function applyLang(){
       <span class="mc-ey">${MENUMETA[i].ey?MENUMETA[i].ey[lang]:t.lessonRange(MENUMETA[i].range)}</span>
       <span class="mc-t">${m.t}</span>
       <span class="mc-d">${m.d}</span></button>`;
+  const feat=t.menu[7];
   $("menuBox").innerHTML=
     `<section class="grp"><div class="grp-h"><span>${t.warmup}</span><i></i></div>
        <div class="tiles">${[0,1,6].map(i=>card(t.menu[i],i)).join("")}</div></section>
      <section class="grp"><div class="grp-h"><span>${t.challenge}</span><i></i></div>
-       <div class="tiles tiles-4">${[2,3,4,5].map(i=>card(t.menu[i],i)).join("")}</div></section>`;
+       <div class="tiles tiles-4">${[2,3,4,5].map(i=>card(t.menu[i],i)).join("")}</div></section>
+     <section class="grp"><div class="grp-h"><span>${t.spellSection}</span><i></i></div>
+       <button class="mcard mcard-feature" style="--tone:var(--silk)" onclick="${feat.f}">
+         <span class="niche"><span class="ic">${feat.e}</span></span>
+         <span class="feat-txt"><span class="mc-t">${feat.t}</span><span class="mc-d">${feat.d}</span></span>
+         <span class="feat-go">▶</span>
+       </button></section>`;
   document.querySelectorAll(".back-btn").forEach(b=>b.textContent=t.back);
   $("quitBtn").textContent=t.quit;$("memQuit").textContent=t.quit;
   $("lettersPill").textContent=t.lettersPill;
@@ -781,6 +841,7 @@ function applyLang(){
   $("resRetry").textContent=t.retry;
   $("resHome").textContent=t.home;
   if(!$("view-connect").classList.contains("hidden")) showConnect();
+  if(!$("view-spell").classList.contains("hidden")) spellBuild();
 }
 
 /* ── 經驗值 ── */
@@ -1162,6 +1223,139 @@ function showResult(stars,title,detail,retryFn){
   $("resDetail").innerHTML=detail;
   $("resRetry").onclick=retryFn;
   show("view-result");
+}
+
+/* ═══════════════ 拼字遊戲（從字母拼出單字） ═══════════════ */
+// 字形 → 讀音（含帶載體與不帶載體的母音）
+const TILE_ROM={
+  "ئا":"a","ا":"a","ئە":"e","ە":"e","ب":"b","پ":"p","ت":"t","ج":"j","چ":"ch","خ":"x",
+  "د":"d","ر":"r","ز":"z","ژ":"zh","س":"s","ش":"sh","غ":"gh","ف":"f","ق":"q","ك":"k",
+  "گ":"g","ڭ":"ng","ل":"l","م":"m","ن":"n","ھ":"h","ئو":"o","و":"o","ئۇ":"u","ۇ":"u",
+  "ئۆ":"ö","ۆ":"ö","ئۈ":"ü","ۈ":"ü","ۋ":"w","ئې":"ë","ې":"ë","ئى":"i","ى":"i","ي":"y",
+};
+// 把單字切成「可點選的字母單位」：ئ（U+0626）必與後面的母音合成一格
+function tokenizeWord(w){
+  const a=[...w], out=[];
+  for(let i=0;i<a.length;i++){
+    if(a[i]==="ئ" && i+1<a.length){ out.push(a[i]+a[i+1]); i++; }
+    else out.push(a[i]);
+  }
+  return out;
+}
+function spellTexts(){
+  return lang==="ja" ? {
+    pill:"ウイグル語の単語をつづろう",
+    prompt:"下の文字を使って、順番にこの単語をつづろう：",
+    empty:"ここに組み立てられます",
+    showRom:"読みを表示", hideRom:"読みを隠す", undo:"← 1つ戻る", clear:"クリア", hint:"ヒント",
+    win:"✓ 正解！", wrong:"次の文字ではありません。探してみよう。",
+    next:"次の単語 →", xp:n=>`経験値 +${n}`, cnt:(a,b)=>`${a} / ${b} 文字`,
+  } : {
+    pill:"拼出維吾爾文單字",
+    prompt:"用下面的字母，依順序拼出這個詞：",
+    empty:"拼好的字會出現在這裡",
+    showRom:"顯示讀音", hideRom:"隱藏讀音", undo:"← 退一格", clear:"清除", hint:"提示",
+    win:"✓ 拼對了！", wrong:"這不是下一個字母，再找找。",
+    next:"下一個單字 →", xp:n=>`經驗值 +${n}`, cnt:(a,b)=>`${a} / ${b} 個字母`,
+  };
+}
+let SP=null;
+function startSpell(){
+  const pool=allWords().filter(w=>{const n=tokenizeWord(w.u).length;return n>=3 && n<=6;});
+  const w=shuffle(pool)[0];
+  const tiles=tokenizeWord(w.u);
+  const have=new Set(tiles);
+  const needRoms=new Set(tiles.map(t=>TILE_ROM[t]));
+  const distractPool=LETTERS.map(x=>x.u).filter(u=>!have.has(u) && !needRoms.has(TILE_ROM[u]));
+  const distract=shuffle(distractPool).slice(0, Math.max(2, 7-tiles.length));
+  const bank=shuffle([...tiles,...distract]).map(t=>({tile:t,used:false}));
+  SP={w,tiles,idx:0,placed:[],bank,showRom:false,done:false,scored:false,gain:0};
+  show("view-spell");
+  spellBuild();
+}
+function spellBuild(){
+  if(!SP) return;
+  const X=spellTexts();
+  $("spellPill").textContent=X.pill;
+  const bankHTML=SP.bank.map((b,i)=>
+    `<button class="sp-tile${b.used?' used':''}" data-i="${i}" onclick="spellPick(${i})">
+       <span class="g uy">${b.tile}</span><span class="rr">${SP.showRom?TILE_ROM[b.tile]:''}</span></button>`).join("");
+  $("spellBody").innerHTML=`
+    <div class="sp-q"><div class="sp-mean">${gloss(SP.w)}</div><div class="sp-rom">${SP.w.l}</div></div>
+    <div class="sp-prompt">${X.prompt}</div>
+    <div class="sp-build" id="spBuild"></div>
+    <div class="sp-bank" id="spBank">${bankHTML}</div>
+    <div class="sp-fb" id="spFb"></div>
+    <div class="sp-ctrls" id="spCtrls">
+      <button class="btn ghost" onclick="spellUndo()">${X.undo}</button>
+      <button class="btn ghost" onclick="spellReset()">${X.clear}</button>
+      <button class="btn ghost" onclick="spellHint()">💡 ${X.hint}</button>
+      <button class="btn ghost" onclick="spellToggleRom()">${SP.showRom?X.hideRom:X.showRom}</button>
+    </div>`;
+  spellUpdate();
+  if(SP.done) spellShowWin();
+}
+function spellUpdate(){
+  const X=spellTexts();
+  const built=SP.tiles.slice(0,SP.idx).join("");
+  const b=$("spBuild");
+  if(SP.idx===0){
+    b.innerHTML=`<div class="w empty">${X.empty}</div><div class="cnt">${X.cnt(0,SP.tiles.length)}</div>`;
+  } else {
+    b.innerHTML=`<div class="w uy">${built}</div><div class="cnt">${X.cnt(SP.idx,SP.tiles.length)}</div>`;
+  }
+}
+function spellPick(i){
+  if(!SP||SP.done) return;
+  const b=SP.bank[i]; if(b.used) return;
+  const X=spellTexts();
+  const needRom=TILE_ROM[SP.tiles[SP.idx]];
+  const btn=document.querySelector(`#spBank .sp-tile[data-i="${i}"]`);
+  if(TILE_ROM[b.tile]===needRom){
+    b.used=true; SP.placed.push(i); SP.idx++;
+    btn.classList.add("used");
+    $("spFb").textContent="";
+    spellUpdate();
+    if(SP.idx===SP.tiles.length) spellWin();
+  } else {
+    btn.classList.remove("bad"); void btn.offsetWidth; btn.classList.add("bad");
+    setTimeout(()=>btn.classList.remove("bad"),600);
+    $("spFb").className="sp-fb"; $("spFb").textContent=X.wrong;
+  }
+}
+function spellUndo(){
+  if(!SP||SP.done||!SP.placed.length) return;
+  const i=SP.placed.pop(); SP.bank[i].used=false; SP.idx--;
+  const btn=document.querySelector(`#spBank .sp-tile[data-i="${i}"]`);
+  if(btn) btn.classList.remove("used");
+  $("spFb").textContent=""; spellUpdate();
+}
+function spellReset(){
+  if(!SP) return;
+  SP.bank.forEach(b=>b.used=false); SP.placed=[]; SP.idx=0; SP.done=false;
+  spellBuild();
+}
+function spellToggleRom(){ if(SP){ SP.showRom=!SP.showRom; spellBuild(); } }
+function spellHint(){
+  if(!SP||SP.done) return;
+  const need=TILE_ROM[SP.tiles[SP.idx]];
+  const i=SP.bank.findIndex(b=>!b.used && TILE_ROM[b.tile]===need);
+  if(i<0) return;
+  const btn=document.querySelector(`#spBank .sp-tile[data-i="${i}"]`);
+  if(btn){ btn.style.borderColor="var(--saffron)"; btn.style.background="color-mix(in srgb,var(--saffron) 20%,var(--panel))";
+    setTimeout(()=>{btn.style.borderColor="";btn.style.background="";},900); }
+}
+function spellWin(){
+  SP.done=true;
+  SP.gain=8+SP.tiles.length*2;
+  if(!SP.scored){ addXP(SP.gain); SP.scored=true; }
+  spellShowWin();
+}
+function spellShowWin(){
+  const X=spellTexts();
+  $("spBuild").innerHTML=`<div class="sp-win"><div class="ww uy">${SP.w.u}</div><div class="wm">${SP.w.l}　·　${gloss(SP.w)}</div></div>`;
+  const fb=$("spFb"); fb.className="sp-fb win"; fb.innerHTML=`${X.win}　${X.xp(SP.gain)}`;
+  $("spCtrls").innerHTML=`<button class="btn gold" onclick="startSpell()">${X.next}</button>`;
 }
 
 /* ═══════════════ 初始化 ═══════════════ */
