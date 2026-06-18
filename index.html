@@ -355,6 +355,13 @@
   .spr-fb.win{color:var(--emerald);font-weight:700;}
   .spr-sec{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mulberry);margin:24px 0 10px;display:flex;align-items:center;gap:10px;}
   .spr-sec::after{content:"";flex:1;height:1px;background:var(--line);}
+  .spr-sugghead{display:flex;align-items:center;gap:12px;margin:24px 0 12px;}
+  .spr-sugghead span{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mulberry);white-space:nowrap;}
+  .spr-sugghead i{flex:1;height:1px;background:var(--line);}
+  .spr-shuffle{flex:none;background:var(--panel);border:1px solid var(--line-strong);border-radius:20px;padding:7px 15px;font-size:.84rem;cursor:pointer;font-family:inherit;color:var(--ink);transition:.12s;white-space:nowrap;}
+  .spr-shuffle:hover{border-color:var(--lapis);background:color-mix(in srgb,var(--lapis) 8%,var(--panel));}
+  .spr-shuffle:active{transform:scale(.96);}
+  .spr-shuffle:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
   .spr-sugg{display:flex;flex-wrap:wrap;gap:10px;}
   .spr-chip{background:var(--panel);border:1px solid var(--line-strong);border-radius:20px;padding:8px 16px;cursor:pointer;font-family:inherit;color:var(--ink);font-size:.9rem;transition:.12s;}
   .spr-chip:hover{border-color:var(--lapis);}
@@ -1266,7 +1273,7 @@ function spellTexts(){
     renderedIso:"SHAPING ENGINE なし：独立形を強制", isoBtn:"✂ 独立形を強制", normBtn:"↩ 通常の連結",
     isoHint:"同じコードポイントでも、文字がバラバラに——shaping engine が無いとこうなります。",
     placeholder:"文字を押して始めよう…", back:"戻る", clear:"クリア",
-    tryTitle:"この単語をつづってみよう", targetLabel:"お題：", matched:"つづれた！",
+    tryTitle:"この単語をつづってみよう", shuffleBtn:"🔄 別の語", targetLabel:"お題：", matched:"つづれた！",
     xp:n=>`経験値 +${n}`,
     note:`アラビア文字組版についての記事に着想を得ています：<a href="https://lr0.org/blog/p/arabic/" target="_blank" rel="noopener">lr0.org/blog/p/arabic</a>。4つのコードポイントが保存されても、画面では一続きの字に——shaping engine が無ければ（独立形しか出せないPDF生成器など）、同じコードポイントが4つのバラバラな独立形になります。`,
   } : {
@@ -1278,7 +1285,7 @@ function spellTexts(){
     renderedIso:"沒有 SHAPING ENGINE：強制獨立形", isoBtn:"✂ 強制獨立形", normBtn:"↩ 回到正常連寫",
     isoHint:"同樣的碼點，字母卻各自分開、不相連——這就是沒有排版引擎時的樣子。",
     placeholder:"點字母開始拼…", back:"倒退", clear:"清除",
-    tryTitle:"試試拼出這些詞", targetLabel:"目標：", matched:"拼出來了！",
+    tryTitle:"試試拼出這些詞", shuffleBtn:"🔄 換一批", targetLabel:"目標：", matched:"拼出來了！",
     xp:n=>`經驗值 +${n}`,
     note:`靈感與概念出自一篇談阿拉伯文排版的文章：<a href="https://lr0.org/blog/p/arabic/" target="_blank" rel="noopener">lr0.org/blog/p/arabic</a>。四個碼點存在記憶體裡，畫面上卻是一筆連成的字——沒有 shaping engine（例如某些只會輸出獨立形的 PDF 產生器），同樣的碼點就會變成四個各自分開的獨立形。`,
   };
@@ -1297,7 +1304,7 @@ function spellBuildUI(){
   const X=spellTexts();
   $("spellPill").textContent=X.pill;
   const tile=u=>`<button class="sp-tile" onclick="spellAdd('${u}')"><span class="g uy">${u}</span><span class="rr">${TILE_ROM[u]||""}</span></button>`;
-  const suggHTML=SP.sugg.map((w,i)=>`<button class="spr-chip" data-i="${i}" onclick="spellTarget(${i})"><span class="cr">${w.l}</span> ${gloss(w)}</button>`).join("");
+  const suggHTML=spellSuggHTML();
   $("spellBody").innerHTML=`
     <div class="spr-intro">${X.intro}</div>
     <div class="spr-inst">${X.inst}</div>
@@ -1322,9 +1329,23 @@ function spellBuildUI(){
     <div class="spr-isohint" id="sprIsoHint"></div>
     <div class="spr-cpsrow"><span class="spr-cap">${X.stored}</span><br><span class="spr-cps" id="sprCps"></span></div>
     <div class="spr-fb" id="sprFb"></div>
-    <div class="spr-sec">${X.tryTitle}</div>
+    <div class="spr-sugghead"><span>${X.tryTitle}</span><i></i><button class="spr-shuffle" onclick="spellShuffleSugg()">${X.shuffleBtn}</button></div>
     <div class="spr-sugg" id="sprSugg">${suggHTML}</div>
     <div class="spr-note">${X.note}</div>`;
+  spellRender();
+}
+function spellSuggHTML(){
+  return SP.sugg.map((w,i)=>`<button class="spr-chip" data-i="${i}" onclick="spellTarget(${i})"><span class="cr">${w.l}</span> ${gloss(w)}</button>`).join("");
+}
+function spellShuffleSugg(){
+  if(!SP)return;
+  const pool=allWords().filter(w=>{const n=[...w.u].length; return n>=3 && n<=6;});
+  const prev=new Set(SP.sugg.map(w=>w.u));
+  let pick=shuffle(pool).slice(0,6);
+  // 盡量換成不一樣的一批
+  if(pool.length>6 && pick.every(w=>prev.has(w.u))) pick=shuffle(pool.filter(w=>!prev.has(w.u))).slice(0,6);
+  SP.sugg=pick; SP.target=null;
+  $("sprSugg").innerHTML=spellSuggHTML();
   spellRender();
 }
 function spellAdd(u){ if(!SP)return; SP.seq.push(u); spellRender(); }
