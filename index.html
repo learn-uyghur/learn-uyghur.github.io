@@ -343,6 +343,9 @@
   .spr-cap{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
   .spr-word{font-size:clamp(2.6rem,10vw,4.4rem);color:var(--mulberry);line-height:1.4;min-height:1.5em;margin-top:4px;direction:rtl;}
   .spr-word.empty{color:var(--ink-soft);opacity:.35;font-size:1.4rem;}
+  .spr-word.iso{color:var(--pome);letter-spacing:.08em;}
+  .spr-isohint{text-align:center;min-height:0;color:var(--pome);font-size:.86rem;line-height:1.6;margin:2px auto 0;max-width:42ch;}
+  .spr-isohint:not(:empty){margin:8px auto;}
   .spr-ctrls{display:flex;flex-direction:column;gap:8px;flex:none;}
   .spr-cpsrow{text-align:center;margin:10px 0;min-height:1.6em;}
   .spr-cpsrow .spr-cap{display:block;margin-bottom:4px;}
@@ -1260,6 +1263,8 @@ function spellTexts(){
     inst:`下の文字を押してコードポイント順に追加。いつでも「戻る・クリア」でいろいろな組み合わせを試せます。`,
     baseCap:"基本の文字（1コードポイント）", carriedCap:"語頭母音（台 ئ つき・2コードポイント）",
     rendered:"SHAPING ENGINE による表示", stored:"保存されたコードポイント",
+    renderedIso:"SHAPING ENGINE なし：独立形を強制", isoBtn:"✂ 独立形を強制", normBtn:"↩ 通常の連結",
+    isoHint:"同じコードポイントでも、文字がバラバラに——shaping engine が無いとこうなります。",
     placeholder:"文字を押して始めよう…", back:"戻る", clear:"クリア",
     tryTitle:"この単語をつづってみよう", targetLabel:"お題：", matched:"つづれた！",
     xp:n=>`経験値 +${n}`,
@@ -1270,6 +1275,8 @@ function spellTexts(){
     inst:`點下面的字母，依碼點順序加進詞裡；可隨時「倒退」或「清除」，反覆嘗試不同組合。`,
     baseCap:"基本字母（單一碼點）", carriedCap:"字首母音（含載體 ئ，兩個碼點）",
     rendered:"SHAPING ENGINE 排出的樣子", stored:"儲存的碼點",
+    renderedIso:"沒有 SHAPING ENGINE：強制獨立形", isoBtn:"✂ 強制獨立形", normBtn:"↩ 回到正常連寫",
+    isoHint:"同樣的碼點，字母卻各自分開、不相連——這就是沒有排版引擎時的樣子。",
     placeholder:"點字母開始拼…", back:"倒退", clear:"清除",
     tryTitle:"試試拼出這些詞", targetLabel:"目標：", matched:"拼出來了！",
     xp:n=>`經驗值 +${n}`,
@@ -1280,7 +1287,7 @@ let SP=null;
 function startSpell(){
   const pool=allWords().filter(w=>{const n=[...w.u].length; return n>=3 && n<=6;});
   const sugg=shuffle(pool).slice(0,6);
-  SP={seq:[],target:null,sugg,scored:new Set()};
+  SP={seq:[],target:null,sugg,scored:new Set(),iso:false};
   show("view-spell");
   spellBuildUI();
 }
@@ -1303,14 +1310,16 @@ function spellBuildUI(){
     <div class="spr-target" id="sprTarget"></div>
     <div class="spr-stage">
       <div class="spr-render">
-        <div class="spr-cap">${X.rendered}</div>
+        <div class="spr-cap" id="sprRenderCap">${X.rendered}</div>
         <div class="spr-word uy empty" id="sprWord"></div>
       </div>
       <div class="spr-ctrls">
         <button class="btn ghost" onclick="spellBack()">⌫ ${X.back}</button>
         <button class="btn ghost" onclick="spellClear()">${X.clear}</button>
+        <button class="btn ghost" id="sprIsoBtn" onclick="spellIso()">${X.isoBtn}</button>
       </div>
     </div>
+    <div class="spr-isohint" id="sprIsoHint"></div>
     <div class="spr-cpsrow"><span class="spr-cap">${X.stored}</span><br><span class="spr-cps" id="sprCps"></span></div>
     <div class="spr-fb" id="sprFb"></div>
     <div class="spr-sec">${X.tryTitle}</div>
@@ -1321,6 +1330,7 @@ function spellBuildUI(){
 function spellAdd(u){ if(!SP)return; SP.seq.push(u); spellRender(); }
 function spellBack(){ if(!SP||!SP.seq.length)return; SP.seq.pop(); spellRender(); }
 function spellClear(){ if(!SP)return; SP.seq=[]; spellRender(); }
+function spellIso(){ if(!SP)return; SP.iso=!SP.iso; spellRender(); }
 function spellTarget(i){
   if(!SP)return;
   SP.target = (SP.target===SP.sugg[i]) ? null : SP.sugg[i];
@@ -1331,8 +1341,14 @@ function spellRender(){
   const X=spellTexts();
   const built=SP.seq.join("");
   const wordEl=$("sprWord");
-  if(built){ wordEl.textContent=built; wordEl.classList.remove("empty"); }
+  // 強制獨立形＝在每個字母間插入 ZWNJ（U+200C），騙字型「這裡別連」，模擬沒有 shaping engine
+  const disp = SP.iso ? [...built].join("‌") : built;
+  if(built){ wordEl.textContent=disp; wordEl.classList.remove("empty"); }
   else { wordEl.textContent=X.placeholder; wordEl.classList.add("empty"); }
+  wordEl.classList.toggle("iso", SP.iso && !!built);
+  $("sprRenderCap").textContent = SP.iso ? X.renderedIso : X.rendered;
+  $("sprIsoBtn").textContent = SP.iso ? X.normBtn : X.isoBtn;
+  $("sprIsoHint").innerHTML = (SP.iso && built) ? X.isoHint : "";
   const cps=cpList(built);
   $("sprCps").innerHTML = cps.length? cps.join(" ") : `<span class="empty">—</span>`;
   document.querySelectorAll("#sprSugg .spr-chip").forEach((c,j)=>c.classList.toggle("sel", SP.sugg[j]===SP.target));
