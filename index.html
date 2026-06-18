@@ -330,7 +330,7 @@
   .sp-tile{min-width:76px;background:var(--panel);border:1px solid var(--line-strong);border-radius:10px;
     padding:13px 15px 10px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:8px;transition:.1s;}
   .sp-tile .g{font-size:2.9rem;color:var(--mulberry);line-height:1.4;}
-  .sp-tile .rr{font-size:1rem;font-weight:600;color:var(--ink-soft);line-height:1;min-height:1em;}
+  .sp-tile .rr{font-size:1.2rem;font-weight:600;color:var(--ink-soft);line-height:1;min-height:1em;}
   .sp-tile:hover{border-color:var(--lapis);transform:translateY(-2px);background:color-mix(in srgb,var(--lapis) 7%,var(--panel));}
   .sp-tile:active{transform:translateY(0);}
   .sp-tile:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
@@ -1260,15 +1260,22 @@ const TILE_ROM={
   "ئۆ":"ö","ۆ":"ö","ئۈ":"ü","ۈ":"ü","ۋ":"w","ئې":"ë","ې":"ë","ئى":"i","ى":"i","ي":"y",
 };
 // 字母庫：單碼點基本字母 + 字首母音（含載體 ئ，兩碼點）
-const SP_BASE=["ا","ە","ب","پ","ت","ج","چ","خ","د","ر","ز","ژ","س","ش","غ","ف","ق","ك","گ","ڭ","ل","م","ن","ھ","و","ۇ","ۆ","ۈ","ۋ","ې","ى","ي"];
-const SP_CARRIED=["ئا","ئە","ئو","ئۇ","ئۆ","ئۈ","ئې","ئى"];
+const SP_CONS=["ب","پ","ت","ج","چ","خ","د","ر","ز","ژ","س","ش","غ","ف","ق","ك","گ","ڭ","ل","م","ن","ھ","ۋ","ي"];
+// 每個母音都有兩種寫法：詞首／母音後用「帶載體 ئ」的形，子音後用「不帶載體」的形
+const SP_VOWELS=[
+  {rom:"a",plain:"ا",carried:"ئا"},{rom:"e",plain:"ە",carried:"ئە"},
+  {rom:"o",plain:"و",carried:"ئو"},{rom:"u",plain:"ۇ",carried:"ئۇ"},
+  {rom:"ö",plain:"ۆ",carried:"ئۆ"},{rom:"ü",plain:"ۈ",carried:"ئۈ"},
+  {rom:"ë",plain:"ې",carried:"ئې"},{rom:"i",plain:"ى",carried:"ئى"},
+];
+const VOWEL_SET=new Set(SP_VOWELS.flatMap(v=>[v.plain,v.carried]));
 
 function spellTexts(){
   return lang==="ja" ? {
     pill:"文字つなぎ台",
     intro:`同じ単語でも、<b>保存されるのは線形のコードポイント列</b>（stored codepoints）。でも <b>shaping engine</b> がそれを一続きの筆画に整形します——文字を足すたび、前の文字が形を「交渉」し直します。下の文字を自由に押してみよう。`,
     inst:`下の文字を押してコードポイント順に追加。いつでも「戻る・クリア」でいろいろな組み合わせを試せます。`,
-    baseCap:"基本の文字（1コードポイント）", carriedCap:"語頭母音（台 ئ つき・2コードポイント）",
+    consCap:"子音", vowelCap:"母音（語頭・母音の後では自動的に台 ئ がつきます）",
     rendered:"SHAPING ENGINE による表示", stored:"保存されたコードポイント",
     renderedIso:"SHAPING ENGINE なし：独立形を強制", isoBtn:"✂ 独立形を強制", normBtn:"↩ 通常の連結",
     isoHint:"同じコードポイントでも、文字がバラバラに——shaping engine が無いとこうなります。",
@@ -1280,7 +1287,7 @@ function spellTexts(){
     pill:"連寫拼接台",
     intro:`同一個詞，<b>儲存的是一串線性碼點</b>（stored codepoints），但 <b>shaping engine</b> 會把它們排成一條連續的筆畫——每加一個字母，前面的字母都會重新「協商」自己的形狀。下面自由點字母拼拼看。`,
     inst:`點下面的字母，依碼點順序加進詞裡；可隨時「倒退」或「清除」，反覆嘗試不同組合。`,
-    baseCap:"基本字母（單一碼點）", carriedCap:"字首母音（含載體 ئ，兩個碼點）",
+    consCap:"輔音（子音）", vowelCap:"母音（在詞首或母音後會自動加上載體 ﺋ）",
     rendered:"SHAPING ENGINE 排出的樣子", stored:"儲存的碼點",
     renderedIso:"沒有 SHAPING ENGINE：強制獨立形", isoBtn:"✂ 強制獨立形", normBtn:"↩ 回到正常連寫",
     isoHint:"同樣的碼點，字母卻各自分開、不相連——這就是沒有排版引擎時的樣子。",
@@ -1304,15 +1311,16 @@ function spellBuildUI(){
   const X=spellTexts();
   $("spellPill").textContent=X.pill;
   const tile=u=>`<button class="sp-tile" onclick="spellAdd('${u}')"><span class="g uy">${u}</span><span class="rr">${TILE_ROM[u]||""}</span></button>`;
+  const vtile=v=>`<button class="sp-tile" onclick="spellAddVowel('${v.rom}')"><span class="g uy">${v.plain}</span><span class="rr">${v.rom}</span></button>`;
   const suggHTML=spellSuggHTML();
   $("spellBody").innerHTML=`
     <div class="spr-intro">${X.intro}</div>
     <div class="spr-inst">${X.inst}</div>
     <div class="spr-bankgrp">
-      <div class="spr-bankcap">${X.baseCap}</div>
-      <div class="sp-bank">${SP_BASE.map(tile).join("")}</div>
-      <div class="spr-bankcap">${X.carriedCap}</div>
-      <div class="sp-bank">${SP_CARRIED.map(tile).join("")}</div>
+      <div class="spr-bankcap">${X.consCap}</div>
+      <div class="sp-bank">${SP_CONS.map(tile).join("")}</div>
+      <div class="spr-bankcap">${X.vowelCap}</div>
+      <div class="sp-bank">${SP_VOWELS.map(vtile).join("")}</div>
     </div>
     <div class="spr-target" id="sprTarget"></div>
     <div class="spr-stage">
@@ -1349,6 +1357,15 @@ function spellShuffleSugg(){
   spellRender();
 }
 function spellAdd(u){ if(!SP)return; SP.seq.push(u); spellRender(); }
+function spellAddVowel(rom){
+  if(!SP)return;
+  const v=SP_VOWELS.find(x=>x.rom===rom); if(!v)return;
+  // 維文規則：母音在詞首、或接在另一個母音之後 → 要戴載體 ئ；接在子音後 → 不戴
+  const start=SP.seq.length===0;
+  const afterVowel=SP.seq.length>0 && VOWEL_SET.has(SP.seq[SP.seq.length-1]);
+  SP.seq.push((start||afterVowel) ? v.carried : v.plain);
+  spellRender();
+}
 function spellBack(){ if(!SP||!SP.seq.length)return; SP.seq.pop(); spellRender(); }
 function spellClear(){ if(!SP)return; SP.seq=[]; spellRender(); }
 function spellIso(){ if(!SP)return; SP.iso=!SP.iso; spellRender(); }
