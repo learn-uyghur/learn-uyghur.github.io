@@ -371,6 +371,14 @@
   .spr-chip:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
   .spr-note{font-size:.8rem;color:var(--ink-soft);line-height:1.7;margin-top:18px;border-top:1px solid var(--line);padding-top:12px;}
   .spr-note a{color:var(--lapis);}
+  .spr-handnote{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--lapis);border-radius:3px 8px 8px 3px;padding:16px 20px;margin-top:24px;font-size:.92rem;line-height:1.85;color:var(--ink);}
+  .spr-handnote .hn-h{font-weight:700;color:var(--mulberry);font-size:1.02rem;margin-bottom:8px;}
+  .spr-handnote .uy{font-size:1.25em;color:var(--mulberry);}
+  .spr-handnote .hn-li{display:block;margin:7px 0;}
+  .spr-handnote .hn-yes{color:var(--emerald);white-space:nowrap;}
+  .spr-handnote .hn-no{color:var(--pome);white-space:nowrap;}
+  .spr-handnote .hn-key{margin-top:12px;padding-top:10px;border-top:1px dashed var(--line-strong);}
+  .spr-handnote .hn-tip{margin-top:10px;color:var(--ink-soft);font-size:.88rem;line-height:1.7;}
 </style>
 </head>
 <body>
@@ -1283,6 +1291,13 @@ function spellTexts(){
     tryTitle:"この単語をつづってみよう", shuffleBtn:"🔄 別の語", targetLabel:"お題：", matched:"つづれた！",
     xp:n=>`経験値 +${n}`,
     note:`アラビア文字組版についての記事に着想を得ています：<a href="https://lr0.org/blog/p/arabic/" target="_blank" rel="noopener">lr0.org/blog/p/arabic</a>。4つのコードポイントが保存されても、画面では一続きの字に——shaping engine が無ければ（独立形しか出せないPDF生成器など）、同じコードポイントが4つのバラバラな独立形になります。`,
+    handNote:`<div class="hn-h">✍️ 手書きメモ：母音の台 <span class="uy">ئ</span>（hamza）はいつ付ける？</div>
+      入力時はこのゲームが自動で決めますが、<b>手書き</b>では自分で判断します。母音を書く前に、その<b>前</b>を見ましょう：
+      <span class="hn-li"><b class="hn-yes">台 <span class="uy">ئ</span> あり</b>　語頭（前に文字がない）：<span class="uy">ئالما</span>・<span class="uy">ئاتا</span>・<span class="uy">ئۆي</span></span>
+      <span class="hn-li"><b class="hn-yes">台 <span class="uy">ئ</span> あり</b>　前が母音（母音が連続）：<span class="uy">سائەت</span> の <span class="uy">ئە</span>・<span class="uy">ئائىلە</span></span>
+      <span class="hn-li"><b class="hn-no">台なし</b>　前が子音：<span class="uy">كىتاب</span> の <span class="uy">ى</span>・<span class="uy">ئالما</span> 末尾の <span class="uy">ا</span></span>
+      <div class="hn-key">ひとことで：ウイグル語の単語は「裸の母音」では始められません。母音が<b>子音の直後でなければ</b>、台 <span class="uy">ئ</span> を付けます。覚えやすいのは「リンゴ」<span class="uy">ئالما</span>——同じ a でも語頭は台つき <span class="uy">ئا</span>、末尾は台なし <span class="uy">ا</span>。一語で両方が見られます。</div>
+      <div class="hn-tip">💡 最初はよくここでつまずきます：「六」<span class="uy">ئالتە</span>（alte）の語頭の a は台つき <span class="uy">ئا</span> ですが、つい裸の <span class="uy">ا</span> にしてしまいがち。</div>`,
   } : {
     pill:"連寫拼接台",
     intro:`同一個詞，<b>儲存的是一串線性碼點</b>（stored codepoints），但 <b>shaping engine</b> 會把它們排成一條連續的筆畫——每加一個字母，前面的字母都會重新「協商」自己的形狀。下面自由點字母拼拼看。`,
@@ -1295,6 +1310,13 @@ function spellTexts(){
     tryTitle:"試試拼出這些詞", shuffleBtn:"🔄 換一批", targetLabel:"目標：", matched:"拼出來了！",
     xp:n=>`經驗值 +${n}`,
     note:`靈感與概念出自一篇談阿拉伯文排版的文章：<a href="https://lr0.org/blog/p/arabic/" target="_blank" rel="noopener">lr0.org/blog/p/arabic</a>。四個碼點存在記憶體裡，畫面上卻是一筆連成的字——沒有 shaping engine（例如某些只會輸出獨立形的 PDF 產生器），同樣的碼點就會變成四個各自分開的獨立形。`,
+    handNote:`<div class="hn-h">✍️ 手寫筆記：母音的載體 <span class="uy">ئ</span>（hamza）什麼時候戴？</div>
+      打字時這個遊戲會自動幫你決定，但要<b>手寫</b>維文就得自己判斷。寫一個母音前，先看它<b>前面</b>是什麼：
+      <span class="hn-li"><b class="hn-yes">戴 <span class="uy">ئ</span></b>　詞首（前面沒有字母）：<span class="uy">ئالما</span>、<span class="uy">ئاتا</span>、<span class="uy">ئۆي</span></span>
+      <span class="hn-li"><b class="hn-yes">戴 <span class="uy">ئ</span></b>　前面是另一個母音（兩母音相連）：<span class="uy">سائەت</span> 的 <span class="uy">ئە</span>、<span class="uy">ئائىلە</span></span>
+      <span class="hn-li"><b class="hn-no">不戴</b>　前面是子音：<span class="uy">كىتاب</span> 的 <span class="uy">ى</span>、<span class="uy">ئالما</span> 結尾的 <span class="uy">ا</span></span>
+      <div class="hn-key">一句話：維文的詞不能用「裸母音」起頭；母音只要<b>不是緊接在子音後面</b>，就要戴上 <span class="uy">ئ</span> 這頂帽子。最好記的是「蘋果」<span class="uy">ئالما</span>——同一個 a 音，開頭戴帽 <span class="uy">ئا</span>、結尾在子音後不戴 <span class="uy">ا</span>，一個詞就看完兩種。</div>
+      <div class="hn-tip">💡 很多人第一次都會踩這個坑：拼「六」<span class="uy">ئالتە</span>（alte）時，開頭的 a 要用戴帽的 <span class="uy">ئا</span>，卻很容易先寫成裸的 <span class="uy">ا</span>。</div>`,
   };
 }
 let SP=null;
@@ -1339,6 +1361,7 @@ function spellBuildUI(){
     <div class="spr-fb" id="sprFb"></div>
     <div class="spr-sugghead"><span>${X.tryTitle}</span><i></i><button class="spr-shuffle" onclick="spellShuffleSugg()">${X.shuffleBtn}</button></div>
     <div class="spr-sugg" id="sprSugg">${suggHTML}</div>
+    <div class="spr-handnote">${X.handNote}</div>
     <div class="spr-note">${X.note}</div>`;
   spellRender();
 }
