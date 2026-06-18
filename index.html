@@ -320,31 +320,47 @@
   .mcard-feature .mc-t{font-size:1.18rem;}
   .feat-go{flex:none;font-size:1.2rem;color:var(--silk);font-weight:700;}
 
-  /* ── 拼字遊戲 view ── */
-  .sp-q{text-align:center;margin:6px 0 4px;}
-  .sp-q .sp-mean{font-size:1.5rem;font-weight:700;color:var(--mulberry);}
-  .sp-q .sp-rom{font-size:1.05rem;color:var(--lapis);font-weight:600;letter-spacing:.06em;margin-top:2px;}
-  .sp-prompt{text-align:center;color:var(--ink-soft);font-size:.9rem;margin:10px 0 4px;}
-  .sp-build{min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
-    background:var(--panel);border:1px dashed var(--line-strong);border-radius:10px;padding:14px;margin:8px 0 6px;}
-  .sp-build .w{font-size:clamp(2.4rem,8vw,3.6rem);color:var(--mulberry);line-height:1.3;min-height:1.4em;}
-  .sp-build .w.empty{color:var(--ink-soft);opacity:.4;}
-  .sp-build .cnt{font-size:.78rem;color:var(--ink-soft);font-weight:700;letter-spacing:.05em;}
-  .sp-bank{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:14px 0;}
-  .sp-tile{min-width:62px;background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;
-    padding:10px 12px 8px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:3px;transition:.12s;}
-  .sp-tile .g{font-size:2.1rem;color:var(--mulberry);line-height:1.25;}
-  .sp-tile .rr{font-size:.74rem;color:var(--ink-soft);min-height:1em;}
-  .sp-tile:hover{border-color:var(--lapis);transform:translateY(-2px);}
+  /* ── 拼字遊戲 view（連寫拼接台） ── */
+  .spr-intro{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--saffron);border-radius:3px 7px 7px 3px;padding:14px 18px;font-size:.9rem;line-height:1.8;color:var(--ink);margin-bottom:14px;}
+  .spr-intro b{color:var(--mulberry);}
+  .spr-inst{text-align:center;color:var(--ink-soft);font-size:.86rem;margin:6px 0 10px;}
+  .spr-bankgrp{margin:6px 0 4px;}
+  .spr-bankcap{font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:8px 0 6px;text-align:center;}
+  .sp-bank{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin:2px 0 6px;}
+  .sp-tile{min-width:50px;background:var(--panel);border:1px solid var(--line-strong);border-radius:8px;
+    padding:7px 9px 5px;cursor:pointer;font-family:inherit;display:flex;flex-direction:column;align-items:center;gap:1px;transition:.1s;}
+  .sp-tile .g{font-size:1.7rem;color:var(--mulberry);line-height:1.2;}
+  .sp-tile .rr{font-size:.66rem;color:var(--ink-soft);min-height:.9em;}
+  .sp-tile:hover{border-color:var(--lapis);transform:translateY(-2px);background:color-mix(in srgb,var(--lapis) 7%,var(--panel));}
+  .sp-tile:active{transform:translateY(0);}
   .sp-tile:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
-  .sp-tile.used{opacity:.32;pointer-events:none;border-style:dashed;}
-  .sp-tile.bad{animation:shake .3s;border-color:var(--pome);background:color-mix(in srgb,var(--pome) 14%,var(--panel));}
-  .sp-ctrls{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:6px 0;}
-  .sp-fb{text-align:center;min-height:2.2em;margin:10px auto;font-size:.95rem;line-height:1.6;color:var(--ink-soft);max-width:40ch;}
-  .sp-fb.win{color:var(--emerald);font-weight:700;font-size:1.05rem;}
-  .sp-win{text-align:center;margin:8px 0;}
-  .sp-win .ww{font-size:clamp(2.6rem,9vw,4rem);color:var(--mulberry);}
-  .sp-win .wm{color:var(--ink-soft);margin-top:4px;}
+  .spr-target{text-align:center;min-height:1.6em;margin:10px 0 2px;font-size:.95rem;color:var(--ink);}
+  .spr-target .uy{font-size:1.4em;color:var(--mulberry);}
+  .spr-target b{color:var(--lapis);}
+  .spr-stage{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:center;
+    background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin:6px 0;}
+  .spr-render{flex:1;min-width:200px;text-align:center;}
+  .spr-cap{font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);}
+  .spr-word{font-size:clamp(2.6rem,10vw,4.4rem);color:var(--mulberry);line-height:1.4;min-height:1.5em;margin-top:4px;direction:rtl;}
+  .spr-word.empty{color:var(--ink-soft);opacity:.35;font-size:1.4rem;}
+  .spr-ctrls{display:flex;flex-direction:column;gap:8px;flex:none;}
+  .spr-cpsrow{text-align:center;margin:10px 0;min-height:1.6em;}
+  .spr-cpsrow .spr-cap{display:block;margin-bottom:4px;}
+  .spr-cps{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.92rem;color:var(--lapis);letter-spacing:.04em;word-spacing:.2em;direction:ltr;unicode-bidi:isolate;}
+  .spr-cps .empty{color:var(--ink-soft);opacity:.5;}
+  .spr-fb{text-align:center;min-height:2em;margin:6px auto;font-size:1rem;line-height:1.6;}
+  .spr-fb.win{color:var(--emerald);font-weight:700;}
+  .spr-sec{font-size:.82rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mulberry);margin:24px 0 10px;display:flex;align-items:center;gap:10px;}
+  .spr-sec::after{content:"";flex:1;height:1px;background:var(--line);}
+  .spr-sugg{display:flex;flex-wrap:wrap;gap:10px;}
+  .spr-chip{background:var(--panel);border:1px solid var(--line-strong);border-radius:20px;padding:8px 16px;cursor:pointer;font-family:inherit;color:var(--ink);font-size:.9rem;transition:.12s;}
+  .spr-chip:hover{border-color:var(--lapis);}
+  .spr-chip.sel{border-color:var(--mulberry);background:var(--mulberry);color:var(--panel);}
+  .spr-chip.sel .cr{color:var(--saffron);}
+  .spr-chip .cr{color:var(--lapis);font-weight:700;}
+  .spr-chip:focus-visible{outline:3px solid var(--saffron);outline-offset:2px;}
+  .spr-note{font-size:.8rem;color:var(--ink-soft);line-height:1.7;margin-top:18px;border-top:1px solid var(--line);padding-top:12px;}
+  .spr-note a{color:var(--lapis);}
 </style>
 </head>
 <body>
@@ -473,7 +489,7 @@ zh:{
     {e:"🃏",t:"單字翻翻樂",d:"翻牌配對：維吾爾文 ↔ 中文。翻次越少星星越多！",f:"showCatPick('memory')"},
     {e:"💬",t:"會話挑戰",d:"情境對話題：有人跟你打招呼，你該怎麼回？對應第 13～25 課。",f:"startDialogue()"},
     {e:"🔗",t:"字母怎麼牽手",d:"維文字母怎麼連寫？以「蘋果」ئالما 為例，看懂誰連、誰斷。",f:"showConnect()"},
-    {e:"🧩",t:"拼字遊戲",d:"看中文與讀音，從字母依序拼出維吾爾文單字，看著它們連起來變形！",f:"startSpell()"},
+    {e:"🧩",t:"拼字遊戲",d:"自由點字母，看它們怎麼連寫成詞——體會「碼點」和 shaping engine 排版的差別。",f:"startSpell()"},
   ],
   spellSection:`<span class="uy">ئويۇن</span> · 拼字遊戲`,
   back:"← 回主選單",quit:"✕ 放棄",
@@ -515,7 +531,7 @@ ja:{
     {e:"🃏",t:"単語めくりゲーム",d:"神経衰弱：ウイグル語⇔日本語のペアを探そう。少ない回数ほど星が増える！",f:"showCatPick('memory')"},
     {e:"💬",t:"会話チャレンジ",d:"場面別の会話問題。挨拶されたら何と返す？第13～25課対応。",f:"startDialogue()"},
     {e:"🔗",t:"文字のつなげ方",d:"ウイグル文字はどうつながる？「リンゴ」ئالما を例に、つながる所・切れる所を理解。",f:"showConnect()"},
-    {e:"🧩",t:"つづりゲーム",d:"意味と読みを見て、文字から順番にウイグル語の単語を組み立てよう。つながり方も見える！",f:"startSpell()"},
+    {e:"🧩",t:"つづりゲーム",d:"文字を自由に押して、どうつながって単語になるか観察——「コードポイント」と shaping engine の違いを体感。",f:"startSpell()"},
   ],
   spellSection:`<span class="uy">ئويۇن</span> · つづりゲーム`,
   back:"← メニューへ",quit:"✕ やめる",
@@ -841,7 +857,7 @@ function applyLang(){
   $("resRetry").textContent=t.retry;
   $("resHome").textContent=t.home;
   if(!$("view-connect").classList.contains("hidden")) showConnect();
-  if(!$("view-spell").classList.contains("hidden")) spellBuild();
+  if(!$("view-spell").classList.contains("hidden")) spellBuildUI();
 }
 
 /* ── 經驗值 ── */
@@ -1225,7 +1241,7 @@ function showResult(stars,title,detail,retryFn){
   show("view-result");
 }
 
-/* ═══════════════ 拼字遊戲（從字母拼出單字） ═══════════════ */
+/* ═══════════════ 拼字遊戲：連寫拼接台（自由拼接，看 shaping） ═══════════════ */
 // 字形 → 讀音（含帶載體與不帶載體的母音）
 const TILE_ROM={
   "ئا":"a","ا":"a","ئە":"e","ە":"e","ب":"b","پ":"p","ت":"t","ج":"j","چ":"ch","خ":"x",
@@ -1233,130 +1249,103 @@ const TILE_ROM={
   "گ":"g","ڭ":"ng","ل":"l","م":"m","ن":"n","ھ":"h","ئو":"o","و":"o","ئۇ":"u","ۇ":"u",
   "ئۆ":"ö","ۆ":"ö","ئۈ":"ü","ۈ":"ü","ۋ":"w","ئې":"ë","ې":"ë","ئى":"i","ى":"i","ي":"y",
 };
-// 把單字切成「可點選的字母單位」：ئ（U+0626）必與後面的母音合成一格
-function tokenizeWord(w){
-  const a=[...w], out=[];
-  for(let i=0;i<a.length;i++){
-    if(a[i]==="ئ" && i+1<a.length){ out.push(a[i]+a[i+1]); i++; }
-    else out.push(a[i]);
-  }
-  return out;
-}
+// 字母庫：單碼點基本字母 + 字首母音（含載體 ئ，兩碼點）
+const SP_BASE=["ا","ە","ب","پ","ت","ج","چ","خ","د","ر","ز","ژ","س","ش","غ","ف","ق","ك","گ","ڭ","ل","م","ن","ھ","و","ۇ","ۆ","ۈ","ۋ","ې","ى","ي"];
+const SP_CARRIED=["ئا","ئە","ئو","ئۇ","ئۆ","ئۈ","ئې","ئى"];
+
 function spellTexts(){
   return lang==="ja" ? {
-    pill:"ウイグル語の単語をつづろう",
-    prompt:"下の文字を使って、順番にこの単語をつづろう：",
-    empty:"ここに組み立てられます",
-    showRom:"読みを表示", hideRom:"読みを隠す", undo:"← 1つ戻る", clear:"クリア", hint:"ヒント",
-    win:"✓ 正解！", wrong:"次の文字ではありません。探してみよう。",
-    next:"次の単語 →", xp:n=>`経験値 +${n}`, cnt:(a,b)=>`${a} / ${b} 文字`,
+    pill:"文字つなぎ台",
+    intro:`同じ単語でも、<b>保存されるのは線形のコードポイント列</b>（stored codepoints）。でも <b>shaping engine</b> がそれを一続きの筆画に整形します——文字を足すたび、前の文字が形を「交渉」し直します。下の文字を自由に押してみよう。`,
+    inst:`下の文字を押してコードポイント順に追加。いつでも「戻る・クリア」でいろいろな組み合わせを試せます。`,
+    baseCap:"基本の文字（1コードポイント）", carriedCap:"語頭母音（台 ئ つき・2コードポイント）",
+    rendered:"SHAPING ENGINE による表示", stored:"保存されたコードポイント",
+    placeholder:"文字を押して始めよう…", back:"戻る", clear:"クリア",
+    tryTitle:"この単語をつづってみよう", targetLabel:"お題：", matched:"つづれた！",
+    xp:n=>`経験値 +${n}`,
+    note:`アラビア文字組版についての記事に着想を得ています：<a href="https://lr0.org/blog/p/arabic/" target="_blank" rel="noopener">lr0.org/blog/p/arabic</a>。4つのコードポイントが保存されても、画面では一続きの字に——shaping engine が無ければ（独立形しか出せないPDF生成器など）、同じコードポイントが4つのバラバラな独立形になります。`,
   } : {
-    pill:"拼出維吾爾文單字",
-    prompt:"用下面的字母，依順序拼出這個詞：",
-    empty:"拼好的字會出現在這裡",
-    showRom:"顯示讀音", hideRom:"隱藏讀音", undo:"← 退一格", clear:"清除", hint:"提示",
-    win:"✓ 拼對了！", wrong:"這不是下一個字母，再找找。",
-    next:"下一個單字 →", xp:n=>`經驗值 +${n}`, cnt:(a,b)=>`${a} / ${b} 個字母`,
+    pill:"連寫拼接台",
+    intro:`同一個詞，<b>儲存的是一串線性碼點</b>（stored codepoints），但 <b>shaping engine</b> 會把它們排成一條連續的筆畫——每加一個字母，前面的字母都會重新「協商」自己的形狀。下面自由點字母拼拼看。`,
+    inst:`點下面的字母，依碼點順序加進詞裡；可隨時「倒退」或「清除」，反覆嘗試不同組合。`,
+    baseCap:"基本字母（單一碼點）", carriedCap:"字首母音（含載體 ئ，兩個碼點）",
+    rendered:"SHAPING ENGINE 排出的樣子", stored:"儲存的碼點",
+    placeholder:"點字母開始拼…", back:"倒退", clear:"清除",
+    tryTitle:"試試拼出這些詞", targetLabel:"目標：", matched:"拼出來了！",
+    xp:n=>`經驗值 +${n}`,
+    note:`靈感與概念出自一篇談阿拉伯文排版的文章：<a href="https://lr0.org/blog/p/arabic/" target="_blank" rel="noopener">lr0.org/blog/p/arabic</a>。四個碼點存在記憶體裡，畫面上卻是一筆連成的字——沒有 shaping engine（例如某些只會輸出獨立形的 PDF 產生器），同樣的碼點就會變成四個各自分開的獨立形。`,
   };
 }
 let SP=null;
 function startSpell(){
-  const pool=allWords().filter(w=>{const n=tokenizeWord(w.u).length;return n>=3 && n<=6;});
-  const w=shuffle(pool)[0];
-  const tiles=tokenizeWord(w.u);
-  const have=new Set(tiles);
-  const needRoms=new Set(tiles.map(t=>TILE_ROM[t]));
-  const distractPool=LETTERS.map(x=>x.u).filter(u=>!have.has(u) && !needRoms.has(TILE_ROM[u]));
-  const distract=shuffle(distractPool).slice(0, Math.max(2, 7-tiles.length));
-  const bank=shuffle([...tiles,...distract]).map(t=>({tile:t,used:false}));
-  SP={w,tiles,idx:0,placed:[],bank,showRom:false,done:false,scored:false,gain:0};
+  const pool=allWords().filter(w=>{const n=[...w.u].length; return n>=3 && n<=6;});
+  const sugg=shuffle(pool).slice(0,6);
+  SP={seq:[],target:null,sugg,scored:new Set()};
   show("view-spell");
-  spellBuild();
+  spellBuildUI();
 }
-function spellBuild(){
+function cpList(str){ return [...str].map(c=>"U+"+c.codePointAt(0).toString(16).toUpperCase().padStart(4,"0")); }
+function spellBuildUI(){
   if(!SP) return;
   const X=spellTexts();
   $("spellPill").textContent=X.pill;
-  const bankHTML=SP.bank.map((b,i)=>
-    `<button class="sp-tile${b.used?' used':''}" data-i="${i}" onclick="spellPick(${i})">
-       <span class="g uy">${b.tile}</span><span class="rr">${SP.showRom?TILE_ROM[b.tile]:''}</span></button>`).join("");
+  const tile=u=>`<button class="sp-tile" onclick="spellAdd('${u}')"><span class="g uy">${u}</span><span class="rr">${TILE_ROM[u]||""}</span></button>`;
+  const suggHTML=SP.sugg.map((w,i)=>`<button class="spr-chip" data-i="${i}" onclick="spellTarget(${i})"><span class="cr">${w.l}</span> ${gloss(w)}</button>`).join("");
   $("spellBody").innerHTML=`
-    <div class="sp-q"><div class="sp-mean">${gloss(SP.w)}</div><div class="sp-rom">${SP.w.l}</div></div>
-    <div class="sp-prompt">${X.prompt}</div>
-    <div class="sp-build" id="spBuild"></div>
-    <div class="sp-bank" id="spBank">${bankHTML}</div>
-    <div class="sp-fb" id="spFb"></div>
-    <div class="sp-ctrls" id="spCtrls">
-      <button class="btn ghost" onclick="spellUndo()">${X.undo}</button>
-      <button class="btn ghost" onclick="spellReset()">${X.clear}</button>
-      <button class="btn ghost" onclick="spellHint()">💡 ${X.hint}</button>
-      <button class="btn ghost" onclick="spellToggleRom()">${SP.showRom?X.hideRom:X.showRom}</button>
-    </div>`;
-  spellUpdate();
-  if(SP.done) spellShowWin();
+    <div class="spr-intro">${X.intro}</div>
+    <div class="spr-inst">${X.inst}</div>
+    <div class="spr-bankgrp">
+      <div class="spr-bankcap">${X.baseCap}</div>
+      <div class="sp-bank">${SP_BASE.map(tile).join("")}</div>
+      <div class="spr-bankcap">${X.carriedCap}</div>
+      <div class="sp-bank">${SP_CARRIED.map(tile).join("")}</div>
+    </div>
+    <div class="spr-target" id="sprTarget"></div>
+    <div class="spr-stage">
+      <div class="spr-render">
+        <div class="spr-cap">${X.rendered}</div>
+        <div class="spr-word uy empty" id="sprWord"></div>
+      </div>
+      <div class="spr-ctrls">
+        <button class="btn ghost" onclick="spellBack()">⌫ ${X.back}</button>
+        <button class="btn ghost" onclick="spellClear()">${X.clear}</button>
+      </div>
+    </div>
+    <div class="spr-cpsrow"><span class="spr-cap">${X.stored}</span><br><span class="spr-cps" id="sprCps"></span></div>
+    <div class="spr-fb" id="sprFb"></div>
+    <div class="spr-sec">${X.tryTitle}</div>
+    <div class="spr-sugg" id="sprSugg">${suggHTML}</div>
+    <div class="spr-note">${X.note}</div>`;
+  spellRender();
 }
-function spellUpdate(){
-  const X=spellTexts();
-  const built=SP.tiles.slice(0,SP.idx).join("");
-  const b=$("spBuild");
-  if(SP.idx===0){
-    b.innerHTML=`<div class="w empty">${X.empty}</div><div class="cnt">${X.cnt(0,SP.tiles.length)}</div>`;
-  } else {
-    b.innerHTML=`<div class="w uy">${built}</div><div class="cnt">${X.cnt(SP.idx,SP.tiles.length)}</div>`;
-  }
+function spellAdd(u){ if(!SP)return; SP.seq.push(u); spellRender(); }
+function spellBack(){ if(!SP||!SP.seq.length)return; SP.seq.pop(); spellRender(); }
+function spellClear(){ if(!SP)return; SP.seq=[]; spellRender(); }
+function spellTarget(i){
+  if(!SP)return;
+  SP.target = (SP.target===SP.sugg[i]) ? null : SP.sugg[i];
+  spellRender();
 }
-function spellPick(i){
-  if(!SP||SP.done) return;
-  const b=SP.bank[i]; if(b.used) return;
-  const X=spellTexts();
-  const needRom=TILE_ROM[SP.tiles[SP.idx]];
-  const btn=document.querySelector(`#spBank .sp-tile[data-i="${i}"]`);
-  if(TILE_ROM[b.tile]===needRom){
-    b.used=true; SP.placed.push(i); SP.idx++;
-    btn.classList.add("used");
-    $("spFb").textContent="";
-    spellUpdate();
-    if(SP.idx===SP.tiles.length) spellWin();
-  } else {
-    btn.classList.remove("bad"); void btn.offsetWidth; btn.classList.add("bad");
-    setTimeout(()=>btn.classList.remove("bad"),600);
-    $("spFb").className="sp-fb"; $("spFb").textContent=X.wrong;
-  }
-}
-function spellUndo(){
-  if(!SP||SP.done||!SP.placed.length) return;
-  const i=SP.placed.pop(); SP.bank[i].used=false; SP.idx--;
-  const btn=document.querySelector(`#spBank .sp-tile[data-i="${i}"]`);
-  if(btn) btn.classList.remove("used");
-  $("spFb").textContent=""; spellUpdate();
-}
-function spellReset(){
+function spellRender(){
   if(!SP) return;
-  SP.bank.forEach(b=>b.used=false); SP.placed=[]; SP.idx=0; SP.done=false;
-  spellBuild();
-}
-function spellToggleRom(){ if(SP){ SP.showRom=!SP.showRom; spellBuild(); } }
-function spellHint(){
-  if(!SP||SP.done) return;
-  const need=TILE_ROM[SP.tiles[SP.idx]];
-  const i=SP.bank.findIndex(b=>!b.used && TILE_ROM[b.tile]===need);
-  if(i<0) return;
-  const btn=document.querySelector(`#spBank .sp-tile[data-i="${i}"]`);
-  if(btn){ btn.style.borderColor="var(--saffron)"; btn.style.background="color-mix(in srgb,var(--saffron) 20%,var(--panel))";
-    setTimeout(()=>{btn.style.borderColor="";btn.style.background="";},900); }
-}
-function spellWin(){
-  SP.done=true;
-  SP.gain=8+SP.tiles.length*2;
-  if(!SP.scored){ addXP(SP.gain); SP.scored=true; }
-  spellShowWin();
-}
-function spellShowWin(){
   const X=spellTexts();
-  $("spBuild").innerHTML=`<div class="sp-win"><div class="ww uy">${SP.w.u}</div><div class="wm">${SP.w.l}　·　${gloss(SP.w)}</div></div>`;
-  const fb=$("spFb"); fb.className="sp-fb win"; fb.innerHTML=`${X.win}　${X.xp(SP.gain)}`;
-  $("spCtrls").innerHTML=`<button class="btn gold" onclick="startSpell()">${X.next}</button>`;
+  const built=SP.seq.join("");
+  const wordEl=$("sprWord");
+  if(built){ wordEl.textContent=built; wordEl.classList.remove("empty"); }
+  else { wordEl.textContent=X.placeholder; wordEl.classList.add("empty"); }
+  const cps=cpList(built);
+  $("sprCps").innerHTML = cps.length? cps.join(" ") : `<span class="empty">—</span>`;
+  document.querySelectorAll("#sprSugg .spr-chip").forEach((c,j)=>c.classList.toggle("sel", SP.sugg[j]===SP.target));
+  const tEl=$("sprTarget");
+  tEl.innerHTML = SP.target ? `${X.targetLabel} <span class="uy">${SP.target.u}</span> · <b>${SP.target.l}</b> · ${gloss(SP.target)}` : "";
+  const fb=$("sprFb");
+  if(SP.target && built===SP.target.u){
+    let msg=`✓ ${X.matched}`;
+    if(!SP.scored.has(SP.target.u)){ SP.scored.add(SP.target.u); addXP(12); msg+=`　${X.xp(12)}`; }
+    fb.className="spr-fb win"; fb.innerHTML=msg;
+  } else { fb.className="spr-fb"; fb.innerHTML=""; }
 }
+
 
 /* ═══════════════ 初始化 ═══════════════ */
 lang=detectLang();
